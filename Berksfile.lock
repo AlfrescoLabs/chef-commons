@@ -1,0 +1,7 @@
+DEPENDENCIES
+  genius
+    path: .
+    metadata: true
+
+GRAPH
+  genius (0.0.1)

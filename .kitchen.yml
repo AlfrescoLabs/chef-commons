@@ -17,7 +17,33 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[genius::default]
+      - recipe[genius::ec2-tag]
+      - recipe[genius::ec2-discover]
+    data_bags_path: "test/integration/data_bags"
+    attributes: {
+      "name": "chef-genius-local",
+      "hostname": "chef-genius-local",
+      "genius" : {
+        "ec2" : {
+          "peers_file_path" : "/tmp/ec2-peers.json",
+          # Just to print out messages
+          # TODO - spin off an EC2 box and run tests against it
+          "aws_bin" : "echo aws",
+          # "box_tags" : {
+          #   "Status" : "complete",
+          #   "StackName" : "stack1"
+          # },
+          # "query_tags" : {
+          #   "Status" : "complete",
+          #   "StackName" : "stack1"
+          # }
+        }
+      }
+    }
+  - name: misc
+    run_list:
+      - recipe[genius::ec2-tag]
+      - recipe[genius::ec2-discover]
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "name": "chef-genius-local",
