@@ -1,0 +1,42 @@
+# When editing this file, remember that http://www.yamllint.com is your friend :-)
+---
+
+driver_plugin: vagrant
+use_vagrant_berkshelf_plugin: true
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: centos-7.0
+    driver:
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-7.0_chef-provisionerless.box
+    # driver_config:
+    #   require_chef_omnibus: 12.4.1
+
+suites:
+  - name: default
+    run_list:
+      - recipe[genius::default]
+    data_bags_path: "test/integration/data_bags"
+    attributes: {
+      "name": "chef-genius-local",
+      "hostname": "chef-genius-local",
+      "artifact-deployer" : {
+        "maven" : {
+          "timeout" : 1500,
+          "repositories" : {
+            "private" : {
+              "url" : "https://artifacts.alfresco.com/nexus/content/groups/private",
+              "username" : "<%= ENV['NEXUS_USERNAME'] %>",
+              "password" : "<%= ENV['NEXUS_PASSWORD'] %>"
+            }
+          }
+        }
+      },
+      # TODO - still to implement as a recipe
+      "certs" : {
+        "ssl_databag" : "ssl",
+        "ssl_databag_item" : "local"
+      }
+    }
