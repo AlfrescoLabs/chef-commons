@@ -1,6 +1,5 @@
 require 'serverspec'
 require 'helpers'
-require 'faraday'
 
 # set :path, '/sbin:$PATH'
 
