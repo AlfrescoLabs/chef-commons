@@ -43,10 +43,10 @@ if query_tags
               if group_by_tag
                 if tag['Key'] == group_by_tag
                   role = tag['Value']
-                  node.default['ec2']['peers'][role][id] = instance_ip
+                  node.default['genius']['ec2']['peers'][role][id] = instance_ip
                 end
               else
-                  node.default['ec2']['peers'][id] = instance_ip
+                  node.default['genius']['ec2']['peers'][id] = instance_ip
               end
             end
           end
