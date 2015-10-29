@@ -1,1 +1,1 @@
-0 * * * * root  cd /etc/chef ; chef-client -z -j <%= node['genius']['logstash']['discovery-chef-json'] %>
+<%= node['genius']['logstash']['discovery-cron'] %> root  cd /etc/chef ; chef-client -z -j <%= node['genius']['logstash']['discovery-chef-json'] %>
