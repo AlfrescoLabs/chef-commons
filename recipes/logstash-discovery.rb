@@ -26,10 +26,12 @@ if run_discovery
     end
   end
 
+
+"servers": ["localhost:5043"],
   replace_or_add "logstash-forwarder-conf-servers-setup" do
     path "/etc/logstash-forwarder.conf"
-    pattern "logstash_servers: "
-    line "logstash_servers: #{logstash_servers}"
+    pattern "\"servers\": "
+    line "\"servers\": #{logstash_servers}"
     notifies :restart, 'service[logstash-forwarder]', :delayed
     not_if { File.exist?('/etc/logstash-forwarder.conf')}
   end
