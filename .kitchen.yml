@@ -36,8 +36,9 @@ suites:
   - name: default
     run_list:
       - recipe[genius::awscli]
-      - recipe[genius::ec2-tag]
-      - recipe[genius::ec2-discover]
+      - recipe[genius::ec2-tagging]
+      - recipe[genius::ec2-discovery]
+      - recipe[genius::logstash-discovery]
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "name": "chef-genius-local",
@@ -63,29 +64,3 @@ suites:
         }
       }
     }
-  # - name: misc
-  #   run_list:
-  #     - recipe[genius::ec2-tag]
-  #     - recipe[genius::ec2-discover]
-  #   data_bags_path: "test/integration/data_bags"
-  #   attributes: {
-  #     "name": "chef-genius-local",
-  #     "hostname": "chef-genius-local",
-  #     "artifact-deployer" : {
-  #       "maven" : {
-  #         "timeout" : 1500,
-  #         "repositories" : {
-  #           "private" : {
-  #             "url" : "https://artifacts.alfresco.com/nexus/content/groups/private",
-  #             "username" : "<%= ENV['NEXUS_USERNAME'] %>",
-  #             "password" : "<%= ENV['NEXUS_PASSWORD'] %>"
-  #           }
-  #         }
-  #       }
-  #     },
-  #     # TODO - still to implement as a recipe
-  #     "certs" : {
-  #       "ssl_databag" : "ssl",
-  #       "ssl_databag_item" : "local"
-  #     }
-  #   }

@@ -1,0 +1,15 @@
+DEPENDENCIES
+  genius
+    path: .
+    metadata: true
+
+GRAPH
+  build-essential (2.2.4)
+  genius (0.0.1)
+    python (>= 1.4.6)
+  python (1.4.6)
+    build-essential (>= 0.0.0)
+    yum-epel (>= 0.0.0)
+  yum (3.8.2)
+  yum-epel (0.6.4)
+    yum (~> 3.2)
