@@ -27,7 +27,6 @@ if run_discovery
   end
 
 
-"servers": ["localhost:5043"],
   replace_or_add "logstash-forwarder-conf-servers-setup" do
     path "/etc/logstash-forwarder.conf"
     pattern "\"servers\": "
