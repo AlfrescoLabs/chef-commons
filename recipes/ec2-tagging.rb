@@ -1,12 +1,12 @@
 # This recipe aims to help discovery process in EC2;
 # it runs AWS commandline to tag the current EC2 instance
-# with a list of given key=value pairs (node['genius']['ec2']['box_tags'])
+# with a list of given key=value pairs (node['commons']['ec2']['box_tags'])
 #
-box_tags = node['genius']['ec2']['box_tags']
-aws_bin = node['genius']['ec2']['aws_bin']
+box_tags = node['commons']['ec2']['box_tags']
+aws_bin = node['commons']['ec2']['aws_bin']
 
 #TODO - use aws cookbook
-# aws_resource_tag node['genius']['ec2']['instance_id'] do
+# aws_resource_tag node['commons']['ec2']['instance_id'] do
 #   aws_access_key aws['aws_access_key_id']
 #   aws_secret_access_key aws['aws_secret_access_key']
 #   tags({"Name" => "www.example.com app server",

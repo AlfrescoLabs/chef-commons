@@ -1,4 +1,4 @@
-default['genius']['logstash']['discovery-chef-json'] = "/etc/chef/logstash-discovery.json"
-default['genius']['logstash']['ec2_role_name'] = 'logstash'
-default['genius']['logstash']['run_discovery'] = false
-default['genius']['logstash']['discovery-cron'] = "*/5 * * * *"
+default['commons']['logstash']['discovery-chef-json'] = "/etc/chef/logstash-discovery.json"
+default['commons']['logstash']['ec2_role_name'] = 'logstash'
+default['commons']['logstash']['run_discovery'] = false
+default['commons']['logstash']['discovery-cron'] = "*/5 * * * *"

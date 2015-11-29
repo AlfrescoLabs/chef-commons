@@ -1,16 +1,16 @@
 # This recipe aims to help discovery process in EC2;
 # it runs AWS commandline to discover other EC2 instances
-# depending on their tags (node['genius']['ec2']['query_tags']);
+# depending on their tags (node['commons']['ec2']['query_tags']);
 # results can be grouped by the value of a given tag
-# (node['genius']['ec2']['group_by_tag']); IPs returned can be either
-# Private or Public (node['genius']['ec2']['query'])
+# (node['commons']['ec2']['group_by_tag']); IPs returned can be either
+# Private or Public (node['commons']['ec2']['query'])
 #
-aws_bin = node['genius']['ec2']['aws_bin']
-peers_file_path = node['genius']['ec2']['peers_file_path']
-query_tags = node['genius']['ec2']['query_tags']
-group_by_tag = node['genius']['ec2']['group_by_tag']
-only_running_instances = node['genius']['ec2']['only_running_instances']
-attribute_to_fetch = node['genius']['ec2']['attribute_to_fetch']
+aws_bin = node['commons']['ec2']['aws_bin']
+peers_file_path = node['commons']['ec2']['peers_file_path']
+query_tags = node['commons']['ec2']['query_tags']
+group_by_tag = node['commons']['ec2']['group_by_tag']
+only_running_instances = node['commons']['ec2']['only_running_instances']
+attribute_to_fetch = node['commons']['ec2']['attribute_to_fetch']
 
 # Query AWS instances and set node attributes for haproxy service discovery configuration
 if query_tags
@@ -43,10 +43,10 @@ if query_tags
               if group_by_tag
                 if tag['Key'] == group_by_tag
                   role = tag['Value']
-                  node.default['genius']['ec2']['peers'][role][id] = instance_ip
+                  node.default['commons']['ec2']['peers'][role][id] = instance_ip
                 end
               else
-                  node.default['genius']['ec2']['peers'][id] = instance_ip
+                  node.default['commons']['ec2']['peers'][id] = instance_ip
               end
             end
           end

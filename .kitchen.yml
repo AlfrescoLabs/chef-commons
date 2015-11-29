@@ -35,15 +35,15 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[genius::awscli]
-      - recipe[genius::ec2-tagging]
-      - recipe[genius::ec2-discovery]
-      - recipe[genius::logstash-discovery]
+      - recipe[commons::awscli]
+      - recipe[commons::ec2-tagging]
+      - recipe[commons::ec2-discovery]
+      - recipe[commons::logstash-discovery]
     data_bags_path: "test/integration/data_bags"
     attributes: {
-      "name": "chef-genius-local",
-      "hostname": "chef-genius-local",
-      "genius" : {
+      "name": "chef-commons-local",
+      "hostname": "chef-commons-local",
+      "commons" : {
         "awscli" : {
           "credentials_databag" : "aws",
           "credentials_databag_item" : "test"

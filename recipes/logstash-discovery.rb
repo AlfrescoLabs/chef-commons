@@ -1,6 +1,6 @@
-discovery_chef_json = node['genius']['logstash']['discovery-chef-json']
-ec2_role_name = node['genius']['logstash']['ec2_role_name']
-run_discovery = node['genius']['logstash']['run_discovery']
+discovery_chef_json = node['commons']['logstash']['discovery-chef-json']
+ec2_role_name = node['commons']['logstash']['ec2_role_name']
+run_discovery = node['commons']['logstash']['run_discovery']
 
 directory File.dirname(discovery_chef_json) do
   action :create
@@ -19,9 +19,9 @@ service 'logstash-forwarder' do
 end
 
 if run_discovery
-  if node['genius']['ec2']['peers'][ec2_role_name]
+  if node['commons']['ec2']['peers'][ec2_role_name]
     logstash_servers = []
-    node['genius']['ec2']['peers'][ec2_role_name].each do |instanceName,instanceIp|
+    node['commons']['ec2']['peers'][ec2_role_name].each do |instanceName,instanceIp|
       logstash_servers << instanceIp
     end
   end

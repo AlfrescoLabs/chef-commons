@@ -1,15 +1,15 @@
-if node['genius']['install_awscli']
+if node['commons']['install_awscli']
 
-  aws_region = node['genius']['awscli']['aws_region']
-  aws_access_key_id = node['genius']['awscli']['aws_access_key_id']
-  aws_secret_access_key = node['genius']['awscli']['aws_secret_access_key']
+  aws_region = node['commons']['awscli']['aws_region']
+  aws_access_key_id = node['commons']['awscli']['aws_access_key_id']
+  aws_secret_access_key = node['commons']['awscli']['aws_secret_access_key']
 
-  credentials_databag = node['genius']['awscli']['credentials_databag']
-  credentials_databag_item = node['genius']['awscli']['credentials_databag_item']
-  credentials_parent_path = node['genius']['awscli']['credentials_parent_path']
+  credentials_databag = node['commons']['awscli']['credentials_databag']
+  credentials_databag_item = node['commons']['awscli']['credentials_databag_item']
+  credentials_parent_path = node['commons']['awscli']['credentials_parent_path']
   aws_config_file = "#{credentials_parent_path}/credentials"
 
-  if node['genius']['awscli']['force_commandline_install']
+  if node['commons']['awscli']['force_commandline_install']
     execute "install-awscli" do
       command "pip install awscli"
       not_if "pip list | grep awscli"
@@ -25,7 +25,7 @@ if node['genius']['install_awscli']
       aws_access_key_id = aws_credentials['aws_access_key_id']
       aws_secret_access_key = aws_credentials['aws_secret_access_key']
     rescue
-      Chef::Log.warn("genius::awscli cannot find databag '"+credentials_databag+"' with item '"+
+      Chef::Log.warn("commons::awscli cannot find databag '"+credentials_databag+"' with item '"+
       credentials_databag_item+"'; skipping "+aws_config_file+ " file creation")
     end
   end
@@ -44,6 +44,6 @@ aws_secret_access_key=#{aws_secret_access_key}"
       content aws_config
     end
   else
-    Chef::Log.warn("genius::awscli couldn't find a databag or access/secret keys as attributed; as a result, #{aws_config_file} have not been created")
+    Chef::Log.warn("commons::awscli couldn't find a databag or access/secret keys as attributed; as a result, #{aws_config_file} have not been created")
   end
 end
