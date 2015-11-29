@@ -1,4 +1,4 @@
-name             "genius"
+name             "commons"
 maintainer       "Alfresco"
 maintainer_email ""
 license          "Apache 2.0"
