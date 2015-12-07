@@ -14,8 +14,8 @@
 # /default/destination/folder/filename_prefix.key1 (with "value1" as content)
 # /default/destination/folder/filename_prefix.key2 (with "value2" as content)
 #
-# Check attributes/databags-to-files.rb to see all attribute configuration options
-# 
+# Check attributes/databags-to-files.rb for all attribute configuration options
+#
 default_destination_folder = node['commons']['databags_to_files']['default_destination_folder']
 default_filename_prefix = node['commons']['databags_to_files']['default_filename_prefix']
 databags = node['commons']['databags_to_files']['databags']

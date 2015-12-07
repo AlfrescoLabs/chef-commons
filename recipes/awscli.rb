@@ -1,3 +1,9 @@
+# commons::awscli installs and configures aws command
+# It loads a databag to locate access key/secret and
+# generates /root/.aws/credentials (configurable)
+#
+# Check attributes/awscli.rb for all attribute configuration options
+# 
 if node['commons']['install_awscli']
 
   aws_region = node['commons']['awscli']['aws_region']
