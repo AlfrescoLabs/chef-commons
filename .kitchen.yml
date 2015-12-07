@@ -38,7 +38,9 @@ suites:
       - recipe[commons::awscli]
       - recipe[commons::databags-to-files]
       - recipe[commons::chefzero]
+      - recipe[commons::_add_mock_ec2_files]
       - recipe[commons::ec2-tagging]
+      - recipe[commons::ec2-discovery]
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "name": "chef-commons-local",
@@ -57,11 +59,8 @@ suites:
             }
           }
         },
-        "ec2" : {
-          "peers_file_path" : "/tmp/ec2-peers.json",
-          # Just to print out messages
-          # TODO - spin off an EC2 box and run tests against it
-          "aws_bin" : "echo aws",
+        "ec2-discovery" : {
+          "skip_ec2_commands" : true,
           # "box_tags" : {
           #   "Status" : "complete",
           #   "StackName" : "stack1"

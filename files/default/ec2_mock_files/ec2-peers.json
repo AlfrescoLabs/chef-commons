@@ -1,0 +1,358 @@
+{
+    "Reservations": [
+        {
+            "OwnerId": "888888888888",
+            "ReservationId": "r-33333333",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Monitoring": {
+                        "State": "disabled"
+                    },
+                    "PublicDnsName": "ec2-52-52-52-52.compute-1.amazonaws.com",
+                    "State": {
+                        "Code": 16,
+                        "Name": "running"
+                    },
+                    "EbsOptimized": false,
+                    "LaunchTime": "2011-11-11T13:13:18.000Z",
+                    "PublicIpAddress": "52.52.52.52",
+                    "PrivateIpAddress": "172.2.2.2",
+                    "ProductCodes": [
+                        {
+                            "ProductCodeId": "",
+                            "ProductCodeType": "marketplace"
+                        }
+                    ],
+                    "VpcId": "vpc-ffffffff",
+                    "StateTransitionReason": "",
+                    "InstanceId": "i-aaaaaaaaa",
+                    "ImageId": "ami-99999999",
+                    "PrivateDnsName": "ip-172-2-2-2.ec2.internal",
+                    "KeyName": "",
+                    "SecurityGroups": [
+                        {
+                            "GroupName": "example-1",
+                            "GroupId": "sg-bbbbbbbb"
+                        },
+                        {
+                            "GroupName": "default",
+                            "GroupId": "sg-99999999"
+                        }
+                    ],
+                    "ClientToken": "",
+                    "SubnetId": "subnet-eeeeeeee",
+                    "InstanceType": "m4.xlarge",
+                    "NetworkInterfaces": [
+                        {
+                            "Status": "in-use",
+                            "MacAddress": "",
+                            "SourceDestCheck": true,
+                            "VpcId": "vpc-ffffffff",
+                            "Description": "",
+                            "Association": {
+                                "PublicIp": "52.52.52.52",
+                                "PublicDnsName": "ec2-52-52-52-52.compute-1.amazonaws.com",
+                                "IpOwnerId": "amazon"
+                            },
+                            "NetworkInterfaceId": "eni-33333333",
+                            "PrivateIpAddresses": [
+                                {
+                                    "PrivateDnsName": "ip-172-2-2-2.ec2.internal",
+                                    "Association": {
+                                        "PublicIp": "52.52.52.52",
+                                        "PublicDnsName": "ec2-52-52-52-52.compute-1.amazonaws.com",
+                                        "IpOwnerId": "amazon"
+                                    },
+                                    "Primary": true,
+                                    "PrivateIpAddress": "172.2.2.2"
+                                }
+                            ],
+                            "PrivateDnsName": "ip-172-2-2-2.ec2.internal",
+                            "Attachment": {
+                                "Status": "attached",
+                                "DeviceIndex": 0,
+                                "DeleteOnTermination": true,
+                                "AttachmentId": "eni-attach-00000000",
+                                "AttachTime": "2011-11-11T08:40:30.000Z"
+                            },
+                            "Groups": [
+                                {
+                                    "GroupName": "example-1",
+                                    "GroupId": "sg-bbbbbbbb"
+                                },
+                                {
+                                    "GroupName": "default",
+                                    "GroupId": "sg-99999999"
+                                }
+                            ],
+                            "SubnetId": "subnet-eeeeeeee",
+                            "OwnerId": "888888888888",
+                            "PrivateIpAddress": "172.2.2.2"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Placement": {
+                        "Tenancy": "default",
+                        "GroupName": "",
+                        "AvailabilityZone": "us-east-1c"
+                    },
+                    "Hypervisor": "xen",
+                    "BlockDeviceMappings": [
+                        {
+                            "DeviceName": "/dev/sda1",
+                            "Ebs": {
+                                "Status": "attached",
+                                "DeleteOnTermination": true,
+                                "VolumeId": "vol-00000000",
+                                "AttachTime": "2011-11-11T08:40:34.000Z"
+                            }
+                        },
+                        {
+                            "DeviceName": "/dev/xvdd",
+                            "Ebs": {
+                                "Status": "attached",
+                                "DeleteOnTermination": false,
+                                "VolumeId": "vol-dddddddd",
+                                "AttachTime": "2011-11-11T08:45:52.000Z"
+                            }
+                        },
+                        {
+                            "DeviceName": "/dev/xvde",
+                            "Ebs": {
+                                "Status": "attached",
+                                "DeleteOnTermination": false,
+                                "VolumeId": "vol-cccccccc",
+                                "AttachTime": "2011-11-11T08:46:10.000Z"
+                            }
+                        }
+                    ],
+                    "Architecture": "x86_64",
+                    "RootDeviceType": "ebs",
+                    "RootDeviceName": "/dev/sda1",
+                    "VirtualizationType": "hvm",
+                    "Tags": [
+                        {
+                            "Value": "demo",
+                            "Key": "stack-instance-id"
+                        },
+                        {
+                            "Value": "complete",
+                            "Key": "Status"
+                        },
+                        {
+                            "Value": "example",
+                            "Key": "billing"
+                        },
+                        {
+                            "Value": "chalf-",
+                            "Key": "Config"
+                        },
+                        {
+                            "Value": "allinone",
+                            "Key": "Role"
+                        },
+                        {
+                            "Value": "example-allinone2",
+                            "Key": "Name"
+                        },
+                        {
+                            "Value": "888888888888",
+                            "Key": "Account"
+                        },
+                        {
+                            "Value": "ALFRESCO.ME",
+                            "Key": "Tenant"
+                        },
+                        {
+                            "Value": "example",
+                            "Key": "Env"
+                        },
+                        {
+                            "Value": "allinone",
+                            "Key": "haproxy-role"
+                        }
+                    ],
+                    "AmiLaunchIndex": 0
+                }
+            ]
+        },
+        {
+            "OwnerId": "888888888888",
+            "ReservationId": "r-ffffffff",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Monitoring": {
+                        "State": "disabled"
+                    },
+                    "PublicDnsName": "ec2-54-54-54-54.compute-1.amazonaws.com",
+                    "State": {
+                        "Code": 16,
+                        "Name": "running"
+                    },
+                    "EbsOptimized": false,
+                    "LaunchTime": "2011-11-11T13:13:18.000Z",
+                    "PublicIpAddress": "54.54.54.54",
+                    "PrivateIpAddress": "172.3.3.3",
+                    "ProductCodes": [
+                        {
+                            "ProductCodeId": "",
+                            "ProductCodeType": "marketplace"
+                        }
+                    ],
+                    "VpcId": "vpc-ffffffff",
+                    "StateTransitionReason": "",
+                    "InstanceId": "i-dddddddd",
+                    "ImageId": "ami-99999999",
+                    "PrivateDnsName": "ip-172-3-3-3.ec2.internal",
+                    "KeyName": "",
+                    "SecurityGroups": [
+                        {
+                            "GroupName": "example-1",
+                            "GroupId": "sg-bbbbbbbb"
+                        },
+                        {
+                            "GroupName": "default",
+                            "GroupId": "sg-99999999"
+                        }
+                    ],
+                    "ClientToken": "",
+                    "SubnetId": "subnet-bbbbbbbb",
+                    "InstanceType": "m4.xlarge",
+                    "NetworkInterfaces": [
+                        {
+                            "Status": "in-use",
+                            "MacAddress": "",
+                            "SourceDestCheck": true,
+                            "VpcId": "vpc-ffffffff",
+                            "Description": "",
+                            "Association": {
+                                "PublicIp": "54.54.54.54",
+                                "PublicDnsName": "ec2-54-54-54-54.compute-1.amazonaws.com",
+                                "IpOwnerId": "amazon"
+                            },
+                            "NetworkInterfaceId": "eni-aaaaaaaa",
+                            "PrivateIpAddresses": [
+                                {
+                                    "PrivateDnsName": "ip-172-3-3-3.ec2.internal",
+                                    "Association": {
+                                        "PublicIp": "54.54.54.54",
+                                        "PublicDnsName": "ec2-54-54-54-54.compute-1.amazonaws.com",
+                                        "IpOwnerId": "amazon"
+                                    },
+                                    "Primary": true,
+                                    "PrivateIpAddress": "172.3.3.3"
+                                }
+                            ],
+                            "PrivateDnsName": "ip-172-3-3-3.ec2.internal",
+                            "Attachment": {
+                                "Status": "attached",
+                                "DeviceIndex": 0,
+                                "DeleteOnTermination": true,
+                                "AttachmentId": "eni-attach-77777777",
+                                "AttachTime": "2011-11-11T08:40:28.000Z"
+                            },
+                            "Groups": [
+                                {
+                                    "GroupName": "groupname",
+                                    "GroupId": "sg-bbbbbbbb"
+                                },
+                                {
+                                    "GroupName": "default",
+                                    "GroupId": "sg-99999999"
+                                }
+                            ],
+                            "SubnetId": "subnet-bbbbbbbb",
+                            "OwnerId": "888888888888",
+                            "PrivateIpAddress": "172.3.3.3"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Placement": {
+                        "Tenancy": "default",
+                        "GroupName": "",
+                        "AvailabilityZone": "us-east-1a"
+                    },
+                    "Hypervisor": "xen",
+                    "BlockDeviceMappings": [
+                        {
+                            "DeviceName": "/dev/sda1",
+                            "Ebs": {
+                                "Status": "attached",
+                                "DeleteOnTermination": true,
+                                "VolumeId": "vol-22222222",
+                                "AttachTime": "2011-11-11T08:40:31.000Z"
+                            }
+                        },
+                        {
+                            "DeviceName": "/dev/xvdd",
+                            "Ebs": {
+                                "Status": "attached",
+                                "DeleteOnTermination": false,
+                                "VolumeId": "vol-55555555",
+                                "AttachTime": "2011-11-11T08:45:47.000Z"
+                            }
+                        },
+                        {
+                            "DeviceName": "/dev/xvde",
+                            "Ebs": {
+                                "Status": "attached",
+                                "DeleteOnTermination": false,
+                                "VolumeId": "vol-cccccccc",
+                                "AttachTime": "2011-11-11T08:46:07.000Z"
+                            }
+                        }
+                    ],
+                    "Architecture": "x86_64",
+                    "RootDeviceType": "ebs",
+                    "RootDeviceName": "/dev/sda1",
+                    "VirtualizationType": "hvm",
+                    "Tags": [
+                        {
+                            "Value": "allinone",
+                            "Key": "Role"
+                        },
+                        {
+                            "Value": "chalf-",
+                            "Key": "Config"
+                        },
+                        {
+                            "Value": "allinone",
+                            "Key": "haproxy-role"
+                        },
+                        {
+                            "Value": "example-allinone1",
+                            "Key": "Name"
+                        },
+                        {
+                            "Value": "888888888888",
+                            "Key": "Account"
+                        },
+                        {
+                            "Value": "complete",
+                            "Key": "Status"
+                        },
+                        {
+                            "Value": "ALFRESCO.ME",
+                            "Key": "Tenant"
+                        },
+                        {
+                            "Value": "demo",
+                            "Key": "stack-instance-id"
+                        },
+                        {
+                            "Value": "example",
+                            "Key": "Env"
+                        },
+                        {
+                            "Value": "example",
+                            "Key": "billing"
+                        }
+                    ],
+                    "AmiLaunchIndex": 0
+                }
+            ]
+        }
+    ]
+}
