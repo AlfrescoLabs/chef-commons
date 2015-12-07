@@ -36,9 +36,9 @@ suites:
   - name: default
     run_list:
       - recipe[commons::awscli]
+      - recipe[commons::databags-to-files]
+      - recipe[commons::chefzero]
       - recipe[commons::ec2-tagging]
-      - recipe[commons::ec2-discovery]
-      - recipe[commons::logstash-discovery]
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "name": "chef-commons-local",
@@ -47,6 +47,15 @@ suites:
         "awscli" : {
           "credentials_databag" : "aws",
           "credentials_databag_item" : "test"
+        },
+        "databags_to_files" : {
+          "default_destination_folder" : "/etc/ssl/certs",
+          "default_filename_prefix" : "mycertname",
+          "databags" : {
+            "certs" : {
+              "test" : {}
+            }
+          }
         },
         "ec2" : {
           "peers_file_path" : "/tmp/ec2-peers.json",

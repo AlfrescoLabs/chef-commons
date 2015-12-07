@@ -1,0 +1,6 @@
+{
+  "id":"test",
+  "crt": "a CRT file",
+  "pem": "a PEM file",
+  "key": "a KEY file"
+}

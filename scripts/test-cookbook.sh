@@ -1,29 +1,43 @@
 #!/bin/bash
 
+# test-cookbook.sh
+#
+# test-cookbook.sh is a Bash script that runs lint checks on a project; if a ./recipes folder is found
+# foodcritic, rubocop and knife test are invoked to check Chef cookbook syntax
+#
+# test-cookbook.sh uses bundler to fetch the following gems:
+# - foodcritic
+# - rubocop
+# - rails-erb-check
+# - jsonlint
+# - yaml-lint
+
 # Exit at first failure
 set -e
 
-echo "[run-test.sh] Start"
+# Fixes issue https://github.com/berkshelf/berkshelf-api/issues/112
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
-# Locate gem executables
-export PATH=/usr/local/packer:/opt/apache-maven/bin:/Users/Shared/apache-maven/3.2.3/bin:$HOME/.chefdk/gem/ruby/2.1.0/bin:/opt/chefdk/bin:/opt/chefdk/embedded/bin:$PATH
+echo "[test-cookbook.sh] Start"
 
-# To avoid nasty nokogiri failures - https://github.com/chef/chef-dk/issues/278
-export PKG_CONFIG_PATH=/opt/chefdk/embedded/lib/pkgconfig
+# Generate Gemfile, containing all gems used below for linting and testing
+echo "[test-cookbook.sh] Creating GemfileTemp for test run"
 
-export GEM_HOME=$HOME/.gemhome
+cat <<EOF > GemfileTemp
+source 'https://rubygems.org'
 
-# Fetching Gemfile, containing all gems used below for linting and testing
-echo "[run-test.sh] Fetching commong Gemfile from Packer Common"
-curl -L https://raw.githubusercontent.com/Alfresco/packer-common/master/chef/Gemfile --no-sessionid > GemfileTest
+gem 'foodcritic'
+gem 'rubocop'
+gem 'rails-erb-check'
+gem 'jsonlint'
+gem 'yaml-lint'
+EOF
 
-# Installing gems in GEM_HOME
-echo "[run-test.sh] Running Bundle install"
-bundle install --gemfile=GemfileTest
-rm -rf GemfileTest GemfileTest.lock
+curl -L https://raw.githubusercontent.com/Alfresco/chef-commons/master/scripts/get-gems.sh --no-sessionid | bash -s -- ./GemfileTemp
 
 # Running All checks per types
-echo "[run-test.sh] Running all checks/tests per filetype"
+echo "[test-cookbook.sh] Running all checks/tests per filetype"
 find . -name "*.erb" -exec rails-erb-check {} \;
 find . -name "*.json" -exec jsonlint {} \;
 find . -name "*.rb" -exec ruby -c {} \;
@@ -32,9 +46,11 @@ find . -name "*.yml" -not -path "./.kitchen.yml" -exec yaml-lint {} \;
 # Run knife, foodcritic and rubocop, if this is a Chef recipe
 if [ -d './recipes' ]
 then
-  echo "[run-test.sh] Running all Chef recipe checks/tests"
+  echo "[test-cookbook.sh] Running Knife test"
   knife cookbook test cookbook -o ./ -a
+  echo "[test-cookbook.sh] Running Foodcritic"
   foodcritic -f any .
   # Next one should use warning as fail-level, printing only the progress review
+  echo "[test-cookbook.sh] Running Rubocop"
   rubocop --fail-level warn | sed -n 2p
 fi

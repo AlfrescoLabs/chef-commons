@@ -36,7 +36,7 @@ region=#{aws_region}
 aws_access_key_id=#{aws_access_key_id}
 aws_secret_access_key=#{aws_secret_access_key}"
     directory credentials_parent_path do
-      mode '0700'
+      mode '0600'
       action :create
       not_if { File.exist?(credentials_parent_path)}
     end
