@@ -61,6 +61,10 @@ suites:
         },
         "ec2-discovery" : {
           "skip_ec2_commands" : true,
+          "current" : {
+            "ip" : "171.1.1.1",
+            "az" : "us-east-1a"
+          }
           # "box_tags" : {
           #   "Status" : "complete",
           #   "StackName" : "stack1"
