@@ -10,6 +10,7 @@ default['commons']['ec2-discovery']['output']['elements']['ip'] = "PrivateIpAddr
 default['commons']['ec2-discovery']['output']['elements']['az'] = 'Placement/AvailabilityZone'
 default['commons']['ec2-discovery']['output']['tags']['roles'] = 'roles'
 default['commons']['ec2-discovery']['output']['tags']['instance_name'] = 'Name'
+default['commons']['ec2-discovery']['output']['tags']['jvm_route'] = 'jvm_route'
 
 default['commons']['ec2-discovery']['group_by'] = ['roles','az','id']
 

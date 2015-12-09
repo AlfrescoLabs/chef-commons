@@ -1,8 +1,19 @@
 
 class Chef
+
   module Ec2Discovery
     class << self
       include Chef::Mixin::ShellOut
+
+      def setDeepAttribute(node,path_array,value)
+        if path_array.size() == 1
+          node[path_array[0]] = value
+        else
+          node[path_array[0]] = {} unless node[path_array[0]]
+          puts "[EC2 Discovery] Created empty item #{path_array[0]} on node #{node}\n"
+          setDeepAttribute(node[path_array[0]],path_array[1..-1],value)
+        end
+      end
 
       def discover(config)
         # Cloning, loading and parsing configuration
