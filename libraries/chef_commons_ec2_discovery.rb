@@ -29,6 +29,7 @@ class Chef
 
         # If current instance params are provided, there's no need
         # to invoke aws command
+        puts " [EC2 Discovery] Start!\n"
         if cfg['current']
           current_ip = cfg['current']['ip']
           current_az = cfg['current']['az']
@@ -36,9 +37,9 @@ class Chef
         else
           current_ip = getAwsMetadata(wget_bin, 'local-ipv4')
           current_az = getAwsMetadata(wget_bin, 'placement/availability-zone')
+          puts "[EC2 Discovery] Running AWS Command: #{aws_bin} ec2 describe-instances #{query_tag_filter}\n"
           ec2_peers = run_cmd("#{aws_bin} ec2 describe-instances #{query_tag_filter}")
         end
-        puts " [EC2 Discovery] Start!\n"
         puts "[EC2 Discovery] Current ip: #{current_ip}\n"
         puts "[EC2 Discovery] Current az: #{current_az}\n"
 
