@@ -19,7 +19,7 @@ instance_id_command = "$(wget -q -O - http://169.254.169.254/latest/meta-data/in
 if box_tags
   box_tags_str = "--tags "
   box_tags.each do |tagName,tagValue|
-    box_tags_str += "Key=#{tagName},Value=#{tagValue} "
+        box_tags_str += "Key=#{tagName},Value=\\\"#{tagValue}\\\" "
   end
   execute "set-ec2-tags" do
     command "#{aws_bin} ec2 create-tags --resources #{instance_id_command} #{box_tags_str}"
