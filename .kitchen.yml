@@ -59,7 +59,7 @@ suites:
             }
           }
         },
-        "ec2-discovery" : {
+        "ec2_discovery" : {
           "skip_ec2_commands" : true,
           "current" : {
             "ip" : "171.1.1.1",

@@ -3,7 +3,7 @@
 ruby_block 'ec2-discovery' do
   block do
     # Invoke Commons::Helper.discover_ec2
-    output = Ec2Discovery.discover(node['commons']['ec2-discovery'])
+    output = Ec2Discovery.discover(node['commons']['ec2_discovery'])
   end
   action :run
 end
