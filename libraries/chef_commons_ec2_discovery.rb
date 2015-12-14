@@ -35,7 +35,7 @@ class Chef
           ec2_peers = File.read('/etc/chef/ec2-peers.json')
         else
           current_ip = getAwsMetadata(wget_bin, 'local-ipv4')
-          current_az = getAwsMetadata(wget_bin, 'placement/availability_zone')
+          current_az = getAwsMetadata(wget_bin, 'placement/availability-zone')
           ec2_peers = run_cmd("#{aws_bin} ec2 describe-instances #{query_tag_filter}")
         end
         puts " [EC2 Discovery] Start!\n"
