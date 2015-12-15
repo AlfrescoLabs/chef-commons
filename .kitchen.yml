@@ -36,6 +36,7 @@ suites:
   - name: default
     run_list:
       - recipe[commons::awscli]
+      - recipe[commons::chef-client-cron]
       - recipe[commons::databags-to-files]
       - recipe[commons::chefzero]
       - recipe[commons::_add_mock_ec2_files]
@@ -46,6 +47,11 @@ suites:
       "name": "chef-commons-local",
       "hostname": "chef-commons-local",
       "commons" : {
+        "chef-client-cron" : {
+          "cron_name" : "test1",
+          "chef_json_cookbook" : "commons",
+          "chef_json_source" : "cron/chef-client.cron.erb"
+        },
         "awscli" : {
           "credentials_databag" : "aws",
           "credentials_databag_item" : "test"
@@ -64,15 +70,20 @@ suites:
           "current" : {
             "ip" : "171.1.1.1",
             "az" : "us-east-1a"
+          },
+          "output" : {
+            "elements" : {
+              "id" : "InstanceId",
+              "ip" : "PrivateIpAddress",
+              "state" : "State/Name"
+            },
+            "tags" : {
+              "instance_name" : "Name"
+            },
+            "filter_in" : {
+              "state" : "running"
+            }
           }
-          # "box_tags" : {
-          #   "Status" : "complete",
-          #   "StackName" : "stack1"
-          # },
-          # "query_tags" : {
-          #   "Status" : "complete",
-          #   "StackName" : "stack1"
-          # }
         }
       }
     }

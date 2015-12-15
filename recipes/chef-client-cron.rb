@@ -1,0 +1,16 @@
+cron_name = node['commons']['chef-client-cron']['cron_name']
+chef_json_cookbook = node['commons']['chef-client-cron']['chef_json_cookbook']
+chef_json_source = node['commons']['chef-client-cron']['chef_json_source']
+chef_json_path = node['commons']['chef-client-cron']['chef_json_path']
+chef_client_cron_path = "/etc/cron.d/#{cron_name}.cron"
+
+if cron_name and chef_json_path and chef_json_cookbook and chef_json_source
+  template chef_client_cron_path do
+    source 'cron/chef-client.cron.erb'
+  end
+
+  template chef_json_path do
+    source chef_json_source
+    cookbook chef_json_cookbook
+  end
+end

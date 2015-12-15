@@ -48,7 +48,7 @@ class Chef
 
         if ec2_peers_hash['Reservations'] and ec2_peers_hash['Reservations'].length > 0
           ec2_peers_hash['Reservations'].each do |reservation|
-            reservation['Instances'].each do |awsnode|
+            reservation['Instances'].each_with_index do |awsnode,i|
               instance_details = {}
 
               # Collect element values
@@ -63,24 +63,31 @@ class Chef
 
               # Filter in instances
               filtered_in = true
-              filter_in.each do |field_name,field_value|
-                filtered_in = false if instance_details[field_name] != field_value
+              if filter_in
+                filter_in.each do |field_name,field_value|
+                  filtered_in = false if instance_details[field_name] != field_value
+                end
               end
 
-              # TODO - not working
               # Filter out instances
               filtered_out = false
-              filter_out.each do |field_name,field_value|
-                if field_name == 'current_ip'
-                  field_name = 'ip'
-                  field_value = current_ip
+              if filter_out
+                filter_out.each do |field_name,field_value|
+                  if field_name == 'current_ip'
+                    field_name = 'ip'
+                    field_value = current_ip
+                  end
+                  filtered_out = true if instance_details[field_name] == field_value
                 end
-                filtered_out = true if instance_details[field_name] == field_value
               end
 
               # Add instance to the output list, if not filtered
               if filtered_in and !filtered_out
-                setFacetAttribute(output,group_by,instance_details)
+                if group_by
+                  setFacetAttribute(output,group_by,instance_details)
+                else
+                  setDeepAttribute(output,[i.to_s],instance_details)
+                end
                 puts "[EC2 Discovery] Registered EC2 instance #{instance_details}\n"
               else
                 puts "[EC2 Discovery] Filtered out EC2 instance #{instance_details}\n"
