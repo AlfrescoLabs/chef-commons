@@ -1,8 +1,8 @@
-property :enable_discovery, String
+property :enable_discovery, kind_of: [TrueClass, FalseClass], default: false
 
 load_current_value do
   if ::File.exist?('/etc/logstash-forwarder.conf')
-    enable_discovery "true"
+    enable_discovery true
   end
 end
 
@@ -23,10 +23,11 @@ action :run do
     pattern "\"servers\": "
     line "\"servers\": #{logstash_servers.to_json}"
     notifies :restart, 'service[logstash-forwarder]', :delayed
-    only_if { :enable_discovery == "true" }
+    only_if { :enable_discovery }
   end
 
   service 'logstash-forwarder' do
     action :nothing
+    only_if "service logstash-forwarder status"
   end
 end
