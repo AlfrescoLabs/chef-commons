@@ -39,14 +39,20 @@ suites:
       - recipe[commons::chef-client-cron]
       - recipe[commons::databags-to-files]
       - recipe[commons::chefzero]
-      - recipe[commons::_add_mock_ec2_files]
+      - recipe[commons::_mock_files]
       - recipe[commons::ec2-tagging]
       - recipe[commons::ec2-discovery]
+      - recipe[commons::logstash-discovery]
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "name": "chef-commons-local",
       "hostname": "chef-commons-local",
       "commons" : {
+        "logstash" : {
+          "ec2" : {
+            "run_discovery" : true
+          }
+        },
         "chef-client-cron" : {
           "cron_name" : "test1",
           "chef_json_cookbook" : "commons",

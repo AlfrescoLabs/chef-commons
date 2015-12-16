@@ -5,8 +5,12 @@ DEPENDENCIES
 
 GRAPH
   build-essential (2.2.4)
+  chef-sugar (3.2.0)
   commons (0.0.1)
+    chef-sugar (>= 3.2.0)
+    line (>= 0.6.3)
     python (>= 1.4.6)
+  line (0.6.3)
   python (1.4.6)
     build-essential (>= 0.0.0)
     yum-epel (>= 0.0.0)

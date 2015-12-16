@@ -1,37 +1,32 @@
-discovery_chef_json = node['commons']['logstash']['discovery-chef-json']
-ec2_role_name = node['commons']['logstash']['ec2_role_name']
-run_discovery = node['commons']['logstash']['run_discovery']
+if node['commons']['logstash'] and node['commons']['logstash']['ec2'] and node['commons']['logstash']['ec2']['run_discovery']
 
-directory File.dirname(discovery_chef_json) do
-  action :create
-end
-
-template discovery_chef_json do
-  source 'logstash/logstash-discovery.json.erb'
-end
-
-template '/etc/cron.d/discover-logstash.cron' do
-  source 'logstash/discover-logstash.cron.erb'
-end
-
-service 'logstash-forwarder' do
-  action :nothing
-end
-
-if run_discovery
-  if node['commons']['ec2']['peers'][ec2_role_name]
-    logstash_servers = []
-    node['commons']['ec2']['peers'][ec2_role_name].each do |instanceName,instanceIp|
-      logstash_servers << instanceIp
-    end
+  logstash_servers_path = "/tmp/logstash_servers.tmp"
+  file logstash_servers_path do
+    action :create
   end
 
+  ruby_block 'run-ec2-discovery' do
+    block do
+      # Run EC2 discovery
+      ec2_discovery_output = Ec2Discovery.discover(node['commons']['ec2_discovery'])
 
-  replace_or_add "logstash-forwarder-conf-servers-setup" do
+      ec2_discovery_output.each do |server|
+        logstash_servers << server['ip']
+      end
+      File.open(logstash_servers_path, 'w') { |file| file.write(JSON.parse(logstash_servers).to_s) }
+    end
+    action :run
+  end
+
+  replace_or_add "setup_logstash_servers" do
     path "/etc/logstash-forwarder.conf"
     pattern "\"servers\": "
-    line "\"servers\": #{logstash_servers}"
+    line "\"servers\": #{File.open(logstash_servers_path, "rb").read}"
     notifies :restart, 'service[logstash-forwarder]', :delayed
-    not_if { File.exist?('/etc/logstash-forwarder.conf')}
+    only_if { File.exist?('/etc/logstash-forwarder.conf')}
+  end
+
+  service 'logstash-forwarder' do
+    action :nothing
   end
 end
