@@ -35,11 +35,11 @@ platforms:
 suites:
   - name: default
     run_list:
+      - recipe[commons::_mock_files]
       - recipe[commons::awscli]
       - recipe[commons::chef-client-cron]
       - recipe[commons::databags-to-files]
       - recipe[commons::chefzero]
-      - recipe[commons::_mock_files]
       - recipe[commons::ec2-tagging]
       - recipe[commons::ec2-discovery]
       - recipe[commons::logstash-discovery]
