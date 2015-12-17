@@ -56,6 +56,13 @@ class Chef
                 end
               end
 
+              # Collect element static values
+              if cfg['output']['static']
+                cfg['output']['static'].each do |element_name,element_value|
+                  instance_details[element_name] = element_value
+                end
+              end
+
               # Collect tag values
               if cfg['output']['tags']
                 cfg['output']['tags'].each do |tag_name,tag_value|

@@ -15,7 +15,15 @@ action :run do
 
   ec2_discovery_output.each do |serverItem,server|
     Chef::Log.info("Adding logstash server: #{server}")
-    logstash_servers << "#{server['ip']}:#{lumberjack_port}"
+
+    # TODO - currently relying on ip/name/domain elements to be set
+    replace_or_add "register_logstash_server_#{server['name']}.#{server['domain']}_on_etc_hosts" do
+      path "/etc/hosts"
+      pattern "#{server['ip']} "
+      line "#{server['ip']} #{server['name']}.#{server['domain']}"
+    end
+
+    logstash_servers << "#{server['name']}.#{server['domain']}:#{lumberjack_port}"
   end
   Chef::Log.info("Logstash servers found: #{logstash_servers}")
 
