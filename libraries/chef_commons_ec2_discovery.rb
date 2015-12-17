@@ -1,6 +1,4 @@
-
 class Chef
-
   module Ec2Discovery
     class << self
       include Chef::Mixin::ShellOut
