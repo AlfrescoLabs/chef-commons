@@ -11,6 +11,8 @@ property :chef_cache, String, default: lazy { node['artifact-deployer']['cache_f
 property :pathPrefix, default: lazy { node['artifactPathPrefix'] }
 property :artifacts, default: lazy { node['artifacts'] } || nil
 
+default_action :create
+
 action :create do
   maven_repos_str = []
 
