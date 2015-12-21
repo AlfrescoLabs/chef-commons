@@ -1,13 +1,13 @@
-resource_name :awscli
+resource_name :awscli_setup
 
 property :resource_title, String, name_property: true
-property :aws_region, default: lazy { node['artifact-deployer']['awscli']['aws_region'] }
-property :credentials_databag, default: lazy { node['artifact-deployer']['awscli']['credentials_databag'] }
-property :credentials_databag_item, String, default: lazy { node['artifact-deployer']['awscli']['credentials_databag_item'] }
-property :credentials_parent_path, default: lazy { node['artifact-deployer']['awscli']['credentials_parent_path'] }
-property :force_cmd, kind_of: [TrueClass, FalseClass], default: lazy { node['artifact-deployer']['force_awscli_commandline_install'] || false }
-property :aws_config_file, default: lazy { "#{node['artifact-deployer']['awscli']['credentials_parent_path']}/credentials" }
-property :purge_settings, kind_of: [TrueClass, FalseClass], default: lazy { node['artifact-deployer']['maven']['purge_settings'] || false }
+property :aws_region, default: lazy { node['commons']['awscli']['aws_region'] }
+property :credentials_databag, default: lazy { node['commons']['awscli']['credentials_databag'] }
+property :credentials_databag_item, String, default: lazy { node['commons']['awscli']['credentials_databag_item'] }
+property :credentials_parent_path, default: lazy { node['commons']['awscli']['credentials_parent_path'] }
+property :force_cmd, kind_of: [TrueClass, FalseClass], default: lazy { node['commons']['force_awscli_commandline_install'] || false }
+property :aws_config_file, default: lazy { "#{node['commons']['awscli']['credentials_parent_path']}/credentials" }
+property :purge_settings, kind_of: [TrueClass, FalseClass], default: lazy { node['commons']['maven']['purge_settings'] || false }
 
 default_action :create
 

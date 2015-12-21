@@ -2,10 +2,10 @@ resource_name :maven_setup
 
 property :resource_title, String, name_property: true
 property :maven_home, String, required: true
-property :master_password, String, default: lazy { node['artifact-deployer']['maven']['master_password'] }
-property :repos_databag, String, default: lazy { node['artifact-deployer']['maven']['repos_databag'] }
-property :attribute_repos, String, default: lazy { node['artifact-deployer']['maven']['repositories'] }
-property :purge_settings, kind_of: [TrueClass, FalseClass], default: lazy { node['artifact-deployer']['maven']['purge_settings'] || false }
+property :master_password, String, default: lazy { node['commons']['maven']['master_password'] }
+property :repos_databag, String, default: lazy { node['commons']['maven']['repos_databag'] }
+property :attribute_repos, String, default: lazy { node['commons']['maven']['repositories'] }
+property :purge_settings, kind_of: [TrueClass, FalseClass], default: lazy { node['commons']['maven']['purge_settings'] || false }
 
 default_action :create
 

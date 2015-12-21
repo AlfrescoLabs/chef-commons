@@ -6,8 +6,8 @@ property :term_delimiter_end, String, default: '@@'
 property :property_equals_sign, String, default: '='
 property :global_timeout, String, default: 600
 property :repos_databag, String, default: 'maven_repos'
-property :attribute_repos, default: lazy { node['artifact-deployer']['maven']['repositories'] }
-property :chef_cache, String, default: lazy { node['artifact-deployer']['cache_folder'] || Chef::Config[:file_cache_path] }
+property :attribute_repos, default: lazy { node['commons']['maven']['repositories'] }
+property :chef_cache, String, default: lazy { node['commons']['cache_folder'] || Chef::Config[:file_cache_path] }
 property :pathPrefix, default: lazy { node['artifactPathPrefix'] }
 property :artifacts, default: lazy { node['artifacts'] } || nil
 
