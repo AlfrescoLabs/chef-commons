@@ -1,6 +1,6 @@
 {
-  "id":"test",
-  "url": "https://test.com",
-  "username":"username",
-  "password":"password"
+  "id" : "alfresco",
+  "url" : "https://artifacts.alfresco.com/nexus/content/groups/public",
+  "username" : "",
+  "password" : ""
 }

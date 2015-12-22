@@ -1,7 +1,7 @@
 resource_name :artifact
 
 property :resource_title, String, name_property: true
-property :term_delimiter_start, String, defaut: '@@'
+property :term_delimiter_start, String, default: '@@'
 property :term_delimiter_end, String, default: '@@'
 property :property_equals_sign, String, default: '='
 property :global_timeout, String, default: 600
@@ -129,15 +129,14 @@ action :create do
             only_if "test -f #{chef_cache}/#{fileNameWithExt}"
           end
         end
-
         properties.each do |fileToPatch, propertyMap|
           filtering_mode  = propertyMap[:filtering_mode] ? propertyMap[:filtering_mode] : filtering_mode
           if filtering_mode == 'replace'
             propertyMap.each do |propName, propValue|
               file_replace_line "replace-#{propName}-on-#{fileToPatch}" do
                 path "#{destinationPath}/#{fileToPatch}"
-                replace "#{propName}="
-                with "#{propName}=#{propValue}"
+                replace "#{propName}#{property_equals_sign}"
+                with "#{propName}#{property_equals_sign}#{propValue}"
                 only_if "test -f #{destinationPath}/#{fileToPatch}"
               end
             end
@@ -145,8 +144,9 @@ action :create do
             propertyMap.each do |propName, propValue|
               file_append "append-#{propName}-to-#{fileToPatch}" do
                 path "#{destinationPath}/#{fileToPatch}"
-                line "#{propName}=#{propValue}"
+                line "#{propName}#{property_equals_sign}#{propValue}"
                 only_if "test -f #{destinationPath}/#{fileToPatch}"
+                only_if { propName != "filtering_mode" }
               end
             end
           end
@@ -162,6 +162,7 @@ action :create do
             end
           end
         end
+
       end
     end
   end

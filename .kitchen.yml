@@ -37,12 +37,12 @@ suites:
     data_bags_path: "test/integration/data_bags"
     run_list:
       - recipe[commons_test::artifact_and_maven]
-      # - recipe[commons::chef-client-cron]
-      # - recipe[commons::databags-to-files]
-      # - recipe[commons::chefzero]
-      # - recipe[commons::_add_mock_ec2_files]
-      # - recipe[commons::ec2-tagging]
-      # - recipe[commons::ec2-discovery]
+      - recipe[commons::chef-client-cron]
+      - recipe[commons::databags-to-files]
+      - recipe[commons::chefzero]
+      - recipe[commons::_add_mock_ec2_files]
+      - recipe[commons::ec2-tagging]
+      - recipe[commons::ec2-discovery]
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "name": "chef-commons-local",
@@ -114,6 +114,30 @@ suites:
           destination: "/home/vagrant/subfolder_suite",
           subfolder: "META-INF/\\*",
           owner: "root"
+        },
+        junit4: {
+          enabled : true,
+          unzip: true,
+          groupId : "junit",
+          artifactId : "junit",
+          version : "4.11",
+          destination : "/home/vagrant/properties_suite",
+          owner : "root",
+          filtering_mode : "replace",
+          properties: {
+            "META-INF/MANIFEST.MF" : {
+              "Manifest-Version" : "555"
+              },
+            "LICENSE.txt" : {
+              "superProperty" : "addition works?",
+              filtering_mode : 'append'
+              }
+          },
+          terms: {
+            "META-INF/MANIFEST.MF" : {
+              '(Oracle Corporation)' : "Test replace Term"
+              }
+            }
         }
       }
     }
