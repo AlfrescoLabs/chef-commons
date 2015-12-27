@@ -1,3 +1,5 @@
+# TODO - this is not needed... should be a test recipe
+#
 # commons::ec2-discovery implements an alternative to ohai-ec2
 #
 ruby_block 'ec2-discovery' do

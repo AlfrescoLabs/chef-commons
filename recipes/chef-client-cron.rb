@@ -7,8 +7,18 @@ if cron_name and chef_json_cookbook and chef_json_source
   chef_json_path = "#{node['commons']['chef-client-cron']['chef_json_path_prefix']}/#{cron_name}.json"
   node.default['commons']['chef-client-cron']['chef_json_path'] = chef_json_path
 
+  directory chef_client_cron_path do
+    recursive true
+    action :create
+  end
+
   template chef_client_cron_path do
     source 'cron/chef-client.cron.erb'
+  end
+
+  directory chef_json_path do
+    recursive true
+    action :create
   end
 
   template chef_json_path do
