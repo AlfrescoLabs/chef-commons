@@ -39,7 +39,7 @@ if node['commons']['install_awscli']
     end
   end
 
-  if aws_region and aws_access_key_id and aws_secret_access_key
+  if aws_access_key_id and aws_secret_access_key
     aws_config = "[default]
 region=#{aws_region}
 aws_access_key_id=#{aws_access_key_id}
