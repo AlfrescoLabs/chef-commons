@@ -1,6 +1,4 @@
-
 class Chef
-
   module Ec2Discovery
     class << self
       include Chef::Mixin::ShellOut
@@ -52,13 +50,24 @@ class Chef
               instance_details = {}
 
               # Collect element values
-              cfg['output']['elements'].each do |element_name,element_value|
-                instance_details[element_name] = getSubAttributeStr(awsnode,element_value)
+              if cfg['output']['elements']
+                cfg['output']['elements'].each do |element_name,element_value|
+                  instance_details[element_name] = getSubAttributeStr(awsnode,element_value)
+                end
+              end
+
+              # Collect element static values
+              if cfg['output']['static']
+                cfg['output']['static'].each do |element_name,element_value|
+                  instance_details[element_name] = element_value
+                end
               end
 
               # Collect tag values
-              cfg['output']['tags'].each do |tag_name,tag_value|
-                instance_details[tag_name] = getTagValue(awsnode['Tags'], tag_value)
+              if cfg['output']['tags']
+                cfg['output']['tags'].each do |tag_name,tag_value|
+                  instance_details[tag_name] = getTagValue(awsnode['Tags'], tag_value)
+                end
               end
 
               # Filter in instances

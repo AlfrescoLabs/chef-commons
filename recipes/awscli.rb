@@ -2,8 +2,11 @@
 # It loads a databag to locate access key/secret and
 # generates /root/.aws/credentials (configurable)
 #
+# You can also configure key and secret via Chef attributes, though databag,
+# if specified, would overrule them
+#
 # Check attributes/awscli.rb for all attribute configuration options
-# 
+#
 if node['commons']['install_awscli']
 
   aws_region = node['commons']['awscli']['aws_region']
@@ -17,7 +20,7 @@ if node['commons']['install_awscli']
 
   if node['commons']['awscli']['force_commandline_install']
     execute "install-awscli" do
-      command "pip install awscli"
+      command "pip install awscli --ignore-installed six"
       not_if "pip list | grep awscli"
     end
   else
@@ -25,7 +28,7 @@ if node['commons']['install_awscli']
     python_pip "awscli"
   end
 
-  unless aws_access_key_id or aws_secret_access_key
+  if credentials_databag and credentials_databag_item
     begin
       aws_credentials = data_bag_item(credentials_databag,credentials_databag_item)
       aws_access_key_id = aws_credentials['aws_access_key_id']
@@ -36,7 +39,7 @@ if node['commons']['install_awscli']
     end
   end
 
-  if aws_region and aws_access_key_id and aws_secret_access_key
+  if aws_access_key_id and aws_secret_access_key
     aws_config = "[default]
 region=#{aws_region}
 aws_access_key_id=#{aws_access_key_id}
