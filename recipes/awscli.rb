@@ -20,7 +20,7 @@ if node['commons']['install_awscli']
 
   if node['commons']['awscli']['force_commandline_install']
     package "python-pip" do
-      action :create
+      action :install
     end
     execute "install-awscli" do
       command "pip install awscli --ignore-installed six"
