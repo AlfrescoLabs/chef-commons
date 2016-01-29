@@ -19,6 +19,9 @@ if node['commons']['install_awscli']
   aws_config_file = "#{credentials_parent_path}/credentials"
 
   if node['commons']['awscli']['force_commandline_install']
+    package "python-pip" do
+      action :create
+    end
     execute "install-awscli" do
       command "pip install awscli --ignore-installed six"
       not_if "pip list | grep awscli"
