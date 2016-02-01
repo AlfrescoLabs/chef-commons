@@ -45,6 +45,7 @@ action :create do
     mode 0666
     owner 'root'
     group 'root'
+    cookbook 'commons'
     variables(
       repos: maven_repos
     )
@@ -62,6 +63,7 @@ action :create do
       mode 0666
       owner 'root'
       group 'root'
+      cookbook 'commons'
     end
   end
 

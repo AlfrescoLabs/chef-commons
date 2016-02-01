@@ -9,6 +9,7 @@ property :repos_databag, String, default: 'maven_repos'
 property :attribute_repos, default: lazy { node['commons']['maven']['repositories'] }
 property :chef_cache, String, default: lazy { node['commons']['cache_folder'] || Chef::Config[:file_cache_path] }
 property :pathPrefix, default: lazy { node['artifactPathPrefix'] }
+property :destinationPrefix, default: lazy { node['destinationPrefix'] }
 property :artifacts, default: lazy { node['artifacts'] } || nil
 
 default_action :create
@@ -56,8 +57,8 @@ action :create do
       unzip           = artifact[:unzip] ? artifact[:unzip] : false
       classifier      = artifact[:classifier] ? artifact[:classifier] : ''
       subfolder       = artifact[:subfolder] ? artifact[:subfolder] : ''
-      destination     = artifact[:destination]
-      timeout         = artifact[:timeout] ? artifact[:timeout] : global_timeout
+      destination     = artifact[:destination] ? artifact[:destination] : destinationPrefix
+      timeout     = artifact[:timeout] ? artifact[:timeout] : global_timeout
       destinationName = artifact[:destinationName] ? artifact[:destinationName] : artifactName
       enabled         = artifact[:enabled] ? artifact[:enabled] : false
       properties      = artifact[:properties] ? artifact[:properties] : []
@@ -85,8 +86,12 @@ action :create do
             artifact_id artifact_id
             group_id group_id
             version version
-            classifier classifier if classifier != ''
-            timeout timeout if timeout != ''
+            if classifier != ''
+              classifier  classifier
+            end
+            # if timeout != ''
+            #   timeout     timeout
+            # end
             action :put
             dest chef_cache
             owner owner
