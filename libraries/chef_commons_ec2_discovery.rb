@@ -12,6 +12,14 @@ class Chef
         end
       end
 
+      def getCurrentAz()
+        return getAwsMetadata('wget', 'placement/availability-zone')
+      end
+
+      def getCurrentIp()
+        return getAwsMetadata('wget', 'local-ipv4')
+      end
+
       def discover(config)
         # Cloning, loading and parsing configuration
         cfg = config.to_hash.clone
@@ -33,8 +41,8 @@ class Chef
           current_az = cfg['current']['az']
           ec2_peers = File.read('/etc/chef/ec2-peers.json')
         else
-          current_ip = getAwsMetadata(wget_bin, 'local-ipv4')
-          current_az = getAwsMetadata(wget_bin, 'placement/availability-zone')
+          current_ip = getCurrentIp()
+          current_az = getCurrentAz()
           puts "[EC2 Discovery] Running AWS Command: #{aws_bin} ec2 describe-instances #{query_tag_filter}\n"
           ec2_peers = run_cmd("#{aws_bin} ec2 describe-instances #{query_tag_filter}")
         end

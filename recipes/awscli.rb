@@ -19,6 +19,10 @@ if node['commons']['install_awscli']
   aws_config_file = "#{credentials_parent_path}/credentials"
 
   if node['commons']['awscli']['force_commandline_install']
+    include_recipe 'yum-epel::default'
+    package "python-pip" do
+      action :install
+    end
     execute "install-awscli" do
       command "pip install awscli --ignore-installed six"
       not_if "pip list | grep awscli"
