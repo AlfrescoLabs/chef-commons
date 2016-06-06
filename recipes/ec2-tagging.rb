@@ -16,7 +16,9 @@ aws_bin = node['commons']['awscli']['aws_command']
 #   action :update
 # end
 
-instance_id_command = "$(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id)"
+command = Mixlib::ShellOut.new("curl http://169.254.169.254/latest/meta-data/instance-id")
+command.run_command
+instance_id_command = command.stdout
 
 if box_tags
   box_tags_str = "--tags "
@@ -24,6 +26,7 @@ if box_tags
         box_tags_str += "Key=#{tagName},Value=\\\"#{tagValue}\\\" "
   end
   execute "set-ec2-tags" do
-    command "#{aws_bin} ec2 create-tags --resources #{instance_id_command} #{box_tags_str}"
+    command "#{aws_bin} ec2 create-tags --resources #{instance_id_command} #{box_tags_str} --region #{node['commons']['awscli']['aws_region']}"
+    user "root"
   end
 end
