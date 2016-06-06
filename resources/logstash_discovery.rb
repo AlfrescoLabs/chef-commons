@@ -7,6 +7,8 @@ load_current_value do
   end
 end
 
+default_action :run
+
 action :run do
   logstash_servers = []
 
