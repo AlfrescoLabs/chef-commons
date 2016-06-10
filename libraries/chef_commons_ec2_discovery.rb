@@ -119,7 +119,7 @@ class Chef
       private
 
       def run_cmd(command)
-        cmd = shell_out!(command)
+        cmd = shell_out!(command, :user => "root")
         return cmd.stdout
       end
 
