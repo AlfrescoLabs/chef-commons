@@ -43,8 +43,8 @@ class Chef
         else
           current_ip = getCurrentIp()
           current_az = getCurrentAz()
-          puts "[EC2 Discovery] Running AWS Command: #{aws_bin} ec2 describe-instances #{query_tag_filter} --region #{current_az[0...-1]}\n"
-          ec2_peers = run_cmd("#{aws_bin} ec2 describe-instances #{query_tag_filter} --region #{current_az[0...-1]}")
+          puts "[EC2 Discovery] Running AWS Command: #{aws_bin} ec2 describe-instances #{query_tag_filter}\n"
+          ec2_peers = run_cmd("#{aws_bin} ec2 describe-instances #{query_tag_filter}")
         end
         puts "[EC2 Discovery] Current ip: #{current_ip}\n"
         puts "[EC2 Discovery] Current az: #{current_az}\n"
