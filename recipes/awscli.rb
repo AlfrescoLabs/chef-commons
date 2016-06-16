@@ -22,6 +22,8 @@ if node['commons']['install_awscli']
     include_recipe 'yum-epel::default'
     package "python-pip" do
       action :install
+      retries 10
+      retry_delay 60
     end
     execute "install-awscli" do
       command "pip install awscli --ignore-installed six"
