@@ -2,8 +2,7 @@ m2_home                  = node['maven']['m2_home']
 credentials_parent_path  = node['artifact-deployer']['awscli']['credentials_parent_path']
 purge_settings           = node['artifact-deployer']['maven']['purge_settings']
 
-# => this should not be included here by default. Should be installed in the AMI, if the destination is AWS
-#include_recipe "artifact-deployer::awscli"
+
 include_recipe "artifact-deployer::maven"
 include_recipe "artifact-deployer::artifacts"
 
