@@ -58,7 +58,7 @@ class Chef
               instance_details = {}
 
               # Collect element values
-              if cfg['output']['elements']
+              if cfg['output']['elements'] && awsnode
                 cfg['output']['elements'].each do |element_name,element_value|
                   instance_details[element_name] = getSubAttributeStr(awsnode,element_value)
                 end
