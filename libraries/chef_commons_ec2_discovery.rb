@@ -26,11 +26,16 @@ class Chef
         aws_bin = cfg['aws_command']
         wget_bin = cfg['wget_command']
         query_tags = cfg['query_tags']
+        query_filters = cfg['query_filters']
         skip_ec2_commands = cfg['skip_ec2_commands']
         group_by = cfg['group_by']
         filter_in = cfg['filter_in']
         filter_out = cfg['filter_out']
-        query_tag_filter = getAwsQueryFilter(config['query_tags'])
+        query_tag_filter = getAwsQueryFilter(config['query_tags'],'tag')
+        query_filter = getAwsQueryFilter(config['query_filters'],nil)
+        filters =  (query_tag_filter.to_s.strip.length==0 || query_filter.to_s.strip.length==0) ? "" : "--filters #{query_tag_filter}#{query_filter}"
+
+
         output = {}
 
         # If current instance params are provided, there's no need
@@ -43,8 +48,8 @@ class Chef
         else
           current_ip = getCurrentIp()
           current_az = getCurrentAz()
-          puts "[EC2 Discovery] Running AWS Command: #{aws_bin} ec2 describe-instances #{query_tag_filter} --region #{current_az[0...-1]}\n"
-          ec2_peers = run_cmd("#{aws_bin} ec2 describe-instances #{query_tag_filter} --region #{current_az[0...-1]}")
+          puts "[EC2 Discovery] Running AWS Command: #{aws_bin} ec2 describe-instances #{filters} --region #{current_az[0...-1]}\n"
+          ec2_peers = run_cmd("#{aws_bin} ec2 describe-instances #{filters} --region #{current_az[0...-1]}")
         end
         puts "[EC2 Discovery] Current ip: #{current_ip}\n"
         puts "[EC2 Discovery] Current az: #{current_az}\n"
@@ -127,11 +132,12 @@ class Chef
          return run_cmd("#{wget_bin} -q -O - http://169.254.169.254/latest/meta-data/#{item}")
       end
 
-      def getAwsQueryFilter(query_tags)
+      def getAwsQueryFilter(query_tags,type)
+        attr_type = type.to_s.strip.length==0 ? "" : type+":"
         query_tag_filter = ""
         if query_tags
           query_tags.each do |tagName,tagValue|
-            query_tag_filter += "--filters Name=tag:#{tagName},Values=#{tagValue} "
+            query_tag_filter += "\"Name=#{attr_type}#{tagName},Values=#{tagValue}\" "
           end
         end
         return query_tag_filter
