@@ -32,48 +32,49 @@ suites:
       "name": "chef-commons-local",
       "hostname": "chef-commons-local",
       "commons" : {
-        "logstash" : {
-          "ec2" : {
-            "run_discovery" : true
-          }
-        },
-        "chef-client-cron" : {
-          "cron_name" : "test1",
-          "chef_json_cookbook" : "commons",
-          "chef_json_source" : "cron/chef-client.cron.erb"
-        },
-        "awscli" : {
-          "credentials_databag" : "aws",
-          "credentials_databag_item" : "test"
-        },
-        "databags_to_files" : {
-          "default_destination_folder" : "/etc/ssl/certs",
-          "default_filename_prefix" : "mycertname",
-          "databags" : {
-            "certs" : {
-              "test" : {}
-            }
-          }
-        },
-        "ec2_discovery" : {
-          "skip_ec2_commands" : true,
-          "current" : {
-            "ip" : "171.1.1.1",
-            "az" : "us-east-1a"
+          "install_awscli": true,
+          "logstash" : {
+              "ec2" : {
+                  "run_discovery" : true
+              }
           },
-          "output" : {
-            "elements" : {
-              "id" : "InstanceId",
-              "ip" : "PrivateIpAddress",
-              "state" : "State/Name"
-            },
-            "tags" : {
-              "instance_name" : "Name"
-            },
-            "filter_in" : {
-              "state" : "running"
-            }
+          "chef-client-cron" : {
+              "cron_name" : "test1",
+              "chef_json_cookbook" : "commons",
+              "chef_json_source" : "cron/chef-client.cron.erb"
+          },
+          "awscli" : {
+              "credentials_databag" : "aws",
+              "credentials_databag_item" : "test"
+          },
+          "databags_to_files" : {
+              "default_destination_folder" : "/etc/ssl/certs",
+              "default_filename_prefix" : "mycertname",
+              "databags" : {
+                  "certs" : {
+                      "test" : {}
+                  }
+              }
+          },
+          "ec2_discovery" : {
+              "skip_ec2_commands" : true,
+              "current" : {
+                  "ip" : "171.1.1.1",
+                  "az" : "us-east-1a"
+              },
+              "output" : {
+                  "elements" : {
+                      "id" : "InstanceId",
+                      "ip" : "PrivateIpAddress",
+                      "state" : "State/Name"
+                  },
+                  "tags" : {
+                      "instance_name" : "Name"
+                  },
+                  "filter_in" : {
+                      "state" : "running"
+                  }
+              }
           }
-        }
       }
-    }
+  }

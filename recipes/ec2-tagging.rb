@@ -1,9 +1,7 @@
 include_recipe 'commons::awscli'
-
 # This recipe aims to help discovery process in EC2;
 # it runs AWS commandline to tag the current EC2 instance
 # with a list of given key=value pairs (node['commons']['ec2']['box_tags'])
-#
 box_tags = node['commons']['ec2_tags']
 aws_bin = node['commons']['awscli']['aws_command']
 
