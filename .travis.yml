@@ -1,16 +1,7 @@
 rvm: 2.2.0
 
-sudo: required
-services: docker
+sudo: false
 
-env:
-  matrix:
-  - INSTANCE=ci-centos-72
+install: bundle install --jobs=3 --without='vagrant'
 
-before_install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chefdk -v 0.17.17
-install: chef exec bundle install --jobs=3 --without='vagrant'
-
-# https://github.com/zuazo/kitchen-in-travis-native/issues/1#issuecomment-142455888
-before_script: sudo iptables -L DOCKER || sudo iptables -N DOCKER
-
-script: travis_retry chef exec bundle exec rake foodcritic
+script: bundle exec rake foodcritic
