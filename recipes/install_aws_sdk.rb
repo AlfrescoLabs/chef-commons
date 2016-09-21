@@ -3,5 +3,3 @@ chef_gem 'aws-sdk' do
   compile_time true if Chef::Resource::ChefGem.instance_methods(false).include?(:compile_time)
   action :install
 end
-
-require 'aws-sdk'
