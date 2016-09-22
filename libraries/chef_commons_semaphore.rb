@@ -56,7 +56,7 @@ module InstanceSemaphore
             puts "Attempt ##{retry_count}"
             res = Net::HTTP.get_response(uri).code
             if res == '302'
-              puts 'Alfresco is up!'
+              puts "#{url} is up!"
               break
             else
               puts "[#{res}] #{url} not available yet - sleep #{sleep_seconds} seconds"
