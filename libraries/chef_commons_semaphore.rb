@@ -3,8 +3,16 @@ module InstanceSemaphore
 
     include Chef::Mixin::ShellOut
 
+    def load_net_http
+      require 'net/http'
+    end
+
+    def load_uri
+       require 'uri'
+    end
+
     def load_aws_sdk
-          require 'aws-sdk'
+      require 'aws-sdk'
     end
 
     def start(node)
@@ -12,8 +20,10 @@ module InstanceSemaphore
       retry_count = 0
       hostname = node['hostname']
       s3_bucket_name = node['semaphore']['s3_bucket_name']
-      sleep_seconds = node['semaphore']['sleep_seconds']
+      sleep_seconds = node['semaphore']['sleep_create_bucket_seconds']
+
       s3 = Aws::S3::Client.new(region: node['semaphore']['aws_region'])
+
       while true
         begin
           puts "[#{hostname}] Creating bucket #{s3_bucket_name}"
@@ -33,8 +43,44 @@ module InstanceSemaphore
       end
     end
 
+    def wait_while_service_up(node)
+        load_net_http
+        load_uri
+        retry_count = 0
+        sleep_seconds = node['semaphore']['sleep_wait_service_seconds']
+        url = node['semaphore']['service_url']
+        uri = URI(url)
+        puts "Checking if [#{url}] is up"
+        while retry_count < node['semaphore']['max_retry_count']
+          begin
+            puts "Attempt ##{retry_count}"
+            res = Net::HTTP.get_response(uri).code
+            if res == '302'
+              puts 'Alfresco is up!'
+              break
+            else
+              puts "[#{res}] #{url} not available yet - sleep #{sleep_seconds} seconds"
+              sleep(sleep_seconds)
+              retry_count += 1
+              next
+            end
+          rescue Timeout::Error
+            puts "Timeout - Sleeping #{sleep_seconds} seconds and retrying"
+            sleep(sleep_seconds)
+            retry_count += 1
+            next
+          rescue Errno::EINVAL, Errno::ECONNRESET, EOFError,
+                 Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+            puts "Error while getting http response -> exit"
+            break
+          end
+        end
+    end
+
     def stop(node)
       load_aws_sdk
+      wait_while_service_up(node)
+      sleep_seconds = node['semaphore']['sleep_delete_bucket_seconds']
       retry_count = 0
       hostname = node['hostname']
       s3 = Aws::S3::Client.new(region: node['semaphore']['aws_region'])
@@ -52,8 +98,8 @@ module InstanceSemaphore
           else
             retry_count += 1
             puts e.message
-            puts "[#{hostname}] Cannot delete the bucket sleeping 10 seconds to try to delete it again"
-            sleep(10)
+            puts "[#{hostname}] Cannot delete the bucket sleeping #{sleep_seconds} seconds to try to delete it again"
+            sleep(sleep_seconds)
             next
           end
         end
