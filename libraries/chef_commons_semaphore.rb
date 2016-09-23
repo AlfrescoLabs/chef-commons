@@ -1,8 +1,18 @@
+# Module handling the logic to start multiple alfresco node in AWS instances one by one to avoid race conditions with DB
+# A bucket creation is used as flag to indicate a node is starting and configuring
+# Logic:
+# AWS Node1 initiates in AWS and create the bucket (start method)
+# AWS Node1 starts alfresco redeploy (alfresco is starting)
+# AWS Node1 wait till alfresco service is up and running (wait_while_service_up method)
+# AWS Node1 deletes the bucket (stop method)
+# If any other node starts up while Node1 is starting, Node2 will wait till bucket is deleted and then will recreate the bucket
+
 module InstanceSemaphore
   class << self
 
     include Chef::Mixin::ShellOut
 
+    #loading gems in functions to avoid chef compilation errors
     def load_net_http
       require 'net/http'
     end
@@ -15,6 +25,10 @@ module InstanceSemaphore
       require 'aws-sdk'
     end
 
+    # Try to create a bucket in the specified aws-region
+    # If the bucket already exists, the create_bucket will throw an exception and the
+    # method will attempt a `max_retry_count` times to create it (wating for other Alfresco nodes to delete the bucket)
+    # Be aware that using `us-east-1` region may not cause the `create_bucket` to throw any exception
     def start(node)
       load_aws_sdk
       retry_count = 0
@@ -43,6 +57,8 @@ module InstanceSemaphore
       end
     end
 
+    # Check if the provided url `service_url` (e.g. http://localhost:8070/alfresco) is available
+    # It will try a `max_retry_count` times
     def wait_while_service_up(node)
         load_net_http
         load_uri
@@ -77,9 +93,10 @@ module InstanceSemaphore
         end
     end
 
+    # Try to delete a bucket in the specified aws-region
+    # method will attempt a `max_retry_count` times to delete it in case of AWS service error
     def stop(node)
       load_aws_sdk
-      wait_while_service_up(node) if node['semaphore']['wait_while_service_up']
       sleep_seconds = node['semaphore']['sleep_delete_bucket_seconds']
       retry_count = 0
       hostname = node['hostname']
@@ -108,4 +125,5 @@ module InstanceSemaphore
   end
 end
 
+# Include the module in Chef to be used
 Chef::Recipe.send(:include, InstanceSemaphore)

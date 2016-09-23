@@ -5,4 +5,3 @@ default['semaphore']['sleep_delete_bucket_seconds']=10
 default['semaphore']['sleep_wait_service_seconds']=30
 default['semaphore']['s3_bucket_name']="starting-instance"
 default['semaphore']['service_url']='http://localhost:8070/alfresco'
-default['semaphore']['wait_while_service_up']=true
