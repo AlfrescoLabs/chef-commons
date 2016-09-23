@@ -79,7 +79,7 @@ module InstanceSemaphore
 
     def stop(node)
       load_aws_sdk
-      wait_while_service_up(node)
+      wait_while_service_up(node) if node['semaphore']['wait_while_service_up']
       sleep_seconds = node['semaphore']['sleep_delete_bucket_seconds']
       retry_count = 0
       hostname = node['hostname']
