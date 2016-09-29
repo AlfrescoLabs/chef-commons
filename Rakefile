@@ -32,3 +32,10 @@ end
 
 task :ci => [:foodcritic, :knife, :docker]
 task :default => [:foodcritic, :rubocop, :knife, :dist]
+
+begin
+  require 'kitchen/rake_tasks'
+  Kitchen::RakeTasks.new
+rescue LoadError
+  puts '>>>>> Kitchen gem not loaded, omitting tasks' unless ENV['CI']
+end

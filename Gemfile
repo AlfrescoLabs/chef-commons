@@ -18,3 +18,4 @@ group :vagrant do
   gem 'vagrant-wrapper', '~> 2.0'
   gem 'kitchen-vagrant', '~> 0.18'
 end
+gem "ec2"
