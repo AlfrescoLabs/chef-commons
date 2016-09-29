@@ -16,6 +16,6 @@ end
 
 group :vagrant do
   gem 'vagrant-wrapper', '~> 2.0'
-  gem 'kitchen-vagrant', '~> 0.18'
+  gem 'kitchen-vagrant', '~> 0.20'
 end
 gem "ec2"
