@@ -6,9 +6,9 @@
 # AWS Node1 wait till alfresco service is up and running (wait_while_service_up method)
 # AWS Node1 deletes the bucket (stop method)
 # If any other node starts up while Node1 is starting, Node2 will wait till bucket is deleted and then will recreate the bucket
+# NOTE: This module needs aws-sdk preinstalled to work (recipe: commons::install_aws_sdk)
 
 module InstanceSemaphore
-  class << self
 
     include Chef::Mixin::ShellOut
 
@@ -42,6 +42,7 @@ module InstanceSemaphore
         begin
           puts "[#{hostname}] Creating bucket #{s3_bucket_name}"
           bucket = s3.create_bucket(bucket: s3_bucket_name)
+          return true
           break
         rescue Aws::S3::Errors::ServiceError => e
           puts e.message
@@ -65,14 +66,16 @@ module InstanceSemaphore
         retry_count = 0
         sleep_seconds = node['semaphore']['sleep_wait_service_seconds']
         url = node['semaphore']['service_url']
+        accepted_responses = node['semaphore']['service_accepted_responses']
         uri = URI(url)
         puts "Checking if [#{url}] is up"
         while retry_count < node['semaphore']['max_retry_count']
           begin
             puts "Attempt ##{retry_count}"
             res = Net::HTTP.get_response(uri).code
-            if res == '302'
+            if accepted_responses.include? res
               puts "#{url} is up!"
+              return true
               break
             else
               puts "[#{res}] #{url} not available yet - sleep #{sleep_seconds} seconds"
@@ -88,9 +91,13 @@ module InstanceSemaphore
           rescue Errno::EINVAL, Errno::ECONNRESET, EOFError,
                  Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
             puts "Error while getting http response -> exit"
+            puts e.message
+            return false
             break
           end
         end
+        puts 'Max number retry reached'
+        return false
     end
 
     # Try to delete a bucket in the specified aws-region
@@ -105,12 +112,16 @@ module InstanceSemaphore
       while true
         begin
           s3.delete_bucket(bucket: node['semaphore']['s3_bucket_name'])
+          return true
           break
         rescue Aws::S3::Errors::NoSuchBucket
           puts "No such bucket to delete -> exit"
+          return true
           break
         rescue Aws::S3::Errors::ServiceError => e
           if retry_count > node['semaphore']['max_retry_count']
+             puts e.message
+             puts 'Max number retry reached'
              raise 'Max number retry reached'
           else
             retry_count += 1
@@ -122,8 +133,4 @@ module InstanceSemaphore
         end
       end
     end
-  end
 end
-
-# Include the module in Chef to be used
-Chef::Recipe.send(:include, InstanceSemaphore)

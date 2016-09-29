@@ -1,6 +1,8 @@
+Chef::Resource::RubyBlock.send(:include, InstanceSemaphore)
+
 ruby_block 'stop-instance' do
   block do
-    InstanceSemaphore.stop(node)
+    stop(node)
   end
   action :run
 end

@@ -1,6 +1,8 @@
+Chef::Resource::RubyBlock.send(:include, InstanceSemaphore)
+
 ruby_block 'start-instance' do
   block do
-    InstanceSemaphore.start(node)
+    start(node)
   end
   action :run
 end
