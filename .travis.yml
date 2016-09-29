@@ -2,6 +2,6 @@ rvm: 2.2.4
 
 sudo: false
 
-install: bundle install 
+install: bundle install --jobs=3 --without='vagrant'
 
 script: bundle exec rake foodcritic
