@@ -25,7 +25,7 @@ describe InstanceSemaphore do
 
       Aws.config[:s3] = {
             stub_responses: {
-                create_bucket: Aws::S3::Errors::InvalidBucketName.new(
+                create_bucket: Aws::S3::Errors::BucketAlreadyOwnedByYou.new(
                 "Your previous request to create the named bucket succeeded and you already own it",
                 "Your previous request to create the named bucket succeeded and you already own it"
                 )
@@ -40,7 +40,7 @@ describe InstanceSemaphore do
 
       Aws.config[:s3] = {
             stub_responses: {
-                create_bucket: Aws::S3::Errors::BucketAlreadyOwnedByYou.new(
+                create_bucket: Aws::S3::Errors::InvalidBucketName.new(
                 "Invalid bucket name",
                 "Invalid bucket name"
                 )
