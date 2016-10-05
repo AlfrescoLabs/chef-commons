@@ -42,15 +42,21 @@ module InstanceSemaphore
         begin
           puts "[#{hostname}] Creating bucket #{s3_bucket_name}"
           bucket = s3.create_bucket(bucket: s3_bucket_name)
+          puts "[#{hostname}] Bucket #{s3_bucket_name} created!"
           return true
           break
+        rescue Aws::S3::Errors::InvalidBucketName => e
+	        puts "Invalid bucket name '#{s3_bucket_name}' -> #{e.message}"
+          return false
+          break
         rescue Aws::S3::Errors::ServiceError => e
-          puts e.message
+          puts "Error while creating the bucket TYPE: #{e.class} MESSAGE: #{e.message}"
           if retry_count > node['semaphore']['max_retry_count']
-             raise 'Max number retry reached'
+             puts 'Max number retry reached'
+             return false
           else
+            puts "##{retry_count} [#{hostname}] sleeping #{sleep_seconds} seconds until bucket has been deleted"
             retry_count += 1
-            puts "[#{hostname}] sleeping #{sleep_seconds} seconds until bucket has been deleted"
             sleep(sleep_seconds)
             next
           end
@@ -83,15 +89,14 @@ module InstanceSemaphore
               retry_count += 1
               next
             end
-          rescue Timeout::Error
-            puts "Timeout - Sleeping #{sleep_seconds} seconds and retrying"
+          rescue Timeout::Error, Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+            puts "Error #{e.class}: #{e.message} while getting http response"
+            puts "##{retry_count} Sleeping #{sleep_seconds} seconds and retrying"
             sleep(sleep_seconds)
             retry_count += 1
             next
-          rescue Errno::EINVAL, Errno::ECONNRESET, EOFError,
-                 Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
-            puts "Error while getting http response -> exit"
-            puts e.message
+          rescue StandardError => e
+            puts "Error while getting http response - TYPE: #{e.class} MESSAGE: #{e.message} -> exit"
             return false
             break
           end
@@ -112,6 +117,7 @@ module InstanceSemaphore
       while true
         begin
           s3.delete_bucket(bucket: node['semaphore']['s3_bucket_name'])
+          puts "[#{hostname}] Bucket #{node['semaphore']['s3_bucket_name']} deleted!"
           return true
           break
         rescue Aws::S3::Errors::NoSuchBucket
@@ -120,9 +126,9 @@ module InstanceSemaphore
           break
         rescue Aws::S3::Errors::ServiceError => e
           if retry_count > node['semaphore']['max_retry_count']
-             puts e.message
+             puts "Error while deleting the bucket TYPE: #{e.class} MESSAGE: #{e.message}"
              puts 'Max number retry reached'
-             raise 'Max number retry reached'
+             return false
           else
             retry_count += 1
             puts e.message
