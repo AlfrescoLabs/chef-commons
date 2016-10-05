@@ -130,22 +130,6 @@ describe InstanceSemaphore do
       end
     end
 
-    context 'when the bucket does not exist' do
-      it 'returns true' do
-
-        Aws.config[:s3] = {
-          stub_responses: {
-              delete_bucket: Aws::S3::Errors::NoSuchBucket.new(
-              "The specified bucket does not exist",
-              "The specified bucket does not exist"
-              )
-            }
-        }
-
-        expect(dummy_instancesemaphore.new.stop(@mynode)).to eq(true)
-      end
-    end
-
     context 'when it always hit Aws::S3::Errors::ServiceError ' do
       it 'it throws an exception' do
 

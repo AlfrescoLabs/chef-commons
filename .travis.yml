@@ -4,4 +4,6 @@ sudo: false
 
 install: bundle install --jobs=3 --without='vagrant'
 
-script: bundle exec rake foodcritic
+script:
+  - bundle exec rake foodcritic
+  - bundle exec rspec spec
