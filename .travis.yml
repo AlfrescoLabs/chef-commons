@@ -1,4 +1,4 @@
-rvm: 2.2.4
+rvm: 2.2.3
 
 sudo: false
 
@@ -6,4 +6,4 @@ install: bundle install --jobs=3 --without='vagrant'
 
 script:
   - bundle exec rake foodcritic
-  - bundle exec rspec spec
+  - bundle exec rspec
