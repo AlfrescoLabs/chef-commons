@@ -19,3 +19,4 @@ group :vagrant do
   gem 'kitchen-vagrant', '~> 0.20'
 end
 gem "ec2"
+gem 'aws-sdk', '~> 2'
