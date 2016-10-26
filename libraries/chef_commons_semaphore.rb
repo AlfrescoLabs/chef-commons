@@ -3,25 +3,25 @@
 #
 # It handles both a PARALLEL and SERIAL Logic
 #
-# PARALLEL Logic (one node starts, when it's finished all the others start):
+# PARALLEL Logic (one node starts, when it's finished all the others will start almost simultaneously):
 #
-# AWS Node1 initiates in AWS and create the bucket (start_parallel method)
-# AWS Node1 starts alfresco redeploy (alfresco is starting)
-# AWS Node1 wait till alfresco service is up and running (wait_while_service_up_parallel method)
-# AWS Node1 create a key into a defined bucket to mark it as bootrapped
+# AWS Node1 initiates in AWS and creates the bucket (start_parallel method)
+# AWS Node1 starts Alfresco redeploy (Alfresco is starting)
+# AWS Node1 waits till Alfresco service is up and running (wait_while_service_up_parallel method)
+# AWS Node1 creates a key into a defined bucket to mark it as bootrapped
 # AWS Node1 deletes the bucket (stop method)
 # If any other node starts up while Node1 is starting, Node2 will wait till bucket is deleted and then will recreate the bucket
 #
 # SERIAL Logic (each node wait for the previous to start):
 #
 # AWS Node1 initiates in AWS and create the bucket (start method)
-# AWS Node1 starts alfresco redeploy (alfresco is starting)
-# AWS Node1 wait till alfresco service is up and running (wait_while_service_up method)
+# AWS Node1 starts Alfresco redeploy (Alfresco is starting)
+# AWS Node1 wait till Alfresco service is up and running (wait_while_service_up method)
 # AWS Node1 deletes the bucket (stop method)
-# If any other node starts up while Node1 is starting, Node2 will wait till bucket is deleted and then will recreate the bucket
+# If any other node starts while Node1 is starting, Node2 will wait till bucket is deleted and then will recreate the bucket
 # All the nodes will start in serial one after the other
 #
-# NOTE: This module needs aws-sdk preinstalled to work (recipe: commons::install_aws_sdk)
+# @NOTE: This module needs aws-sdk preinstalled to work (recipe  commons::install_aws_sdk)
 
 module InstanceSemaphore
 
@@ -305,7 +305,7 @@ module InstanceSemaphore
       stop(node)
     end
 
-    # It wrice an object in the specified region, inside the bucket with specified body
+    # It writes an object in the specified region, inside the bucket with specified body
     # it will attempt a retries number of times and sleep for timeout seconds in case of errors
     def write_object(region,s3_bucket_name,object_name,body,timeout,retries)
       load_aws_sdk
