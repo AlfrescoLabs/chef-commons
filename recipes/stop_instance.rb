@@ -9,4 +9,5 @@ ruby_block 'stop-instance' do
     end
   end
   action :run
+  ignore_failure true
 end
