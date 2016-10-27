@@ -47,10 +47,10 @@ module InstanceSemaphore
     def start(node)
       load_aws_sdk
       retry_count = 0
-      s3_bucket_name = node['semaphore']['s3_bucket_name']
+      s3_bucket_name = node['semaphore']['s3_bucket_lock']['name']
       sleep_seconds = node['semaphore']['sleep_create_bucket_seconds']
 
-      s3 = Aws::S3::Client.new(region: node['semaphore']['aws_region'])
+      s3 = Aws::S3::Client.new(region: node['semaphore']['s3_bucket_lock']['aws_region'])
 
       while true
         retry_count += 1
@@ -121,12 +121,12 @@ module InstanceSemaphore
       load_aws_sdk
       sleep_seconds = node['semaphore']['sleep_delete_bucket_seconds']
       retry_count = 0
-      s3 = Aws::S3::Client.new(region: node['semaphore']['aws_region'])
-      puts "[Semaphore][stop] Deleting bucket #{node['semaphore']['s3_bucket_name']}"
+      s3 = Aws::S3::Client.new(region: node['semaphore']['s3_bucket_lock']['aws_region'])
+      puts "[Semaphore][stop] Deleting bucket #{node['semaphore']['s3_bucket_lock']['name']}"
       while true
         begin
-          s3.delete_bucket(bucket: node['semaphore']['s3_bucket_name'])
-          puts "[Semaphore][stop] Bucket #{node['semaphore']['s3_bucket_name']} deleted!"
+          s3.delete_bucket(bucket: node['semaphore']['s3_bucket_lock']['name'])
+          puts "[Semaphore][stop] Bucket #{node['semaphore']['s3_bucket_lock']['name']} deleted!"
           return true
         rescue Aws::S3::Errors::NoSuchBucket
           puts "[Semaphore][stop] No such bucket to delete -> exit"
@@ -184,20 +184,20 @@ module InstanceSemaphore
     def bootstrapped?(node)
       load_aws_sdk
       sleep_seconds = node['semaphore']['sleep_bootstrap']
-      s3_client = Aws::S3::Client.new(region: node['semaphore']['aws_region'])
+      s3_client = Aws::S3::Client.new(region: node['semaphore']['s3_bucket_done']['aws_region'])
       retry_count = 0
       while retry_count < node['semaphore']['max_retry_count']
         begin
-          s3_client.get_object(bucket: node['semaphore']['s3_bucket_name_done'], key: node['semaphore']['bootstrapped_key'])
+          s3_client.get_object(bucket: node['semaphore']['s3_bucket_done']['name'], key: node['semaphore']['bootstrapped_key'])
           puts "[Semaphore][bootstrapped?] An instance alredy bootstrapped!"
           return true
         rescue Aws::S3::Errors::NoSuchKey => e
           puts "[Semaphore][bootstrapped?] \
-          #{node['semaphore']['bootstrapped_key']} does not exist in #{node['semaphore']['s3_bucket_name_done']} -> No instance bootstrapped"
+          #{node['semaphore']['bootstrapped_key']} does not exist in #{node['semaphore']['s3_bucket_done']['name']} -> No instance bootstrapped"
           return false
         rescue Aws::S3::Errors::ServiceError => e
           puts "[Semaphore][bootstrapped?] Error #{e.class}: \
-          #{e.message} while getting object #{node['semaphore']['bootstrapped_key']} from bucket #{node['semaphore']['s3_bucket_name_done']}"
+          #{e.message} while getting object #{node['semaphore']['bootstrapped_key']} from bucket #{node['semaphore']['s3_bucket_done']['name']}"
           puts "[Semaphore][bootstrapped?] ##{retry_count} Sleeping #{sleep_seconds} seconds and retrying"
           sleep(sleep_seconds)
           retry_count += 1
@@ -237,18 +237,18 @@ module InstanceSemaphore
     def start_parallel(node)
       load_aws_sdk
       puts '[Semaphore][start_parallel] Start Parallel'
-      region = node['semaphore']['aws_region']
+      region = node['semaphore']['s3_bucket_lock']['aws_region']
 
       if node['semaphore']['s3_bucket_done']['force_creation']
-        puts "Forcing creation of bucket #{node['semaphore']['s3_bucket_name_done']}"
-        create_bucket(region,node['semaphore']['s3_bucket_name_done'],
+        puts "Forcing creation of bucket #{node['semaphore']['s3_bucket_done']['name']}"
+        create_bucket(region,node['semaphore']['s3_bucket_done']['name'],
         node['semaphore']['max_retry_count'],node['semaphore']['create_bucket']['timeout'])
       end
 
       if bootstrapped?(node)
         return true
       else
-        s3_bucket_name = node['semaphore']['s3_bucket_name']
+        s3_bucket_name = node['semaphore']['s3_bucket_lock']['name']
         is_bucket_created = create_bucket(region,s3_bucket_name,node['semaphore']['max_retry_count'],
         node['semaphore']['create_bucket']['timeout'])
         if is_bucket_created
@@ -287,16 +287,18 @@ module InstanceSemaphore
       puts '[Semaphore][stop_parallel] Stop Parallel'
       if !bootstrapped?(node)
         puts '[Semaphore][stop_parallel] No instance bootstrapped yet!'
-        write_object(node['semaphore']['aws_region'],
-         node['semaphore']['s3_bucket_name_done'],
+        write_object(
+         node['semaphore']['s3_bucket_done']['aws_region'],
+         node['semaphore']['s3_bucket_done']['name'],
          node['semaphore']['bootstrapped_key'],
          "Bootrapped instance_id: #{node['ec2']['instance_id']}",
          node['semaphore']['write_object']['timeout'],
          node['semaphore']['max_retry_count'])
       else
         puts '[Semaphore][stop_parallel] An instance already bootstrapped!'
-        write_object(node['semaphore']['aws_region'],
-          node['semaphore']['s3_bucket_name_done'],
+        write_object(
+          node['semaphore']['s3_bucket_done']['aws_region'],
+          node['semaphore']['s3_bucket_done']['name'],
           node['ec2']['instance_id'],
           "Bootrapped instance_id: #{node['ec2']['instance_id']}",
           node['semaphore']['write_object']['timeout'],

@@ -6,11 +6,10 @@ describe InstanceSemaphore do
     before(:all) do
       @mynode = Chef::Node.new
       @mynode.default['hostname']='127.0.0.1'
-      @mynode.default['semaphore']['s3_bucket_name']='Bucket-Name-test'
+      @mynode.default['semaphore']['s3_bucket_lock']['name']='Bucket-Name-test'
       @mynode.default['semaphore']['sleep_create_bucket_seconds']=1
-      @mynode.default['semaphore']['aws_region']='us-east-1'
+      @mynode.default['semaphore']['s3_bucket_lock']['aws_region']='us-east-1'
       @mynode.default['semaphore']['max_retry_count']=2
-      @mynode.default['semaphore']['s3_bucket_name_done']='Bucket-Name-test-done'
     end
 
     context 'when it CAN create the bucket' do
@@ -158,9 +157,10 @@ describe InstanceSemaphore do
         @mynode = Chef::Node.new
         @mynode.default['hostname'] = '127.0.0.1'
         @mynode.default['semaphore']['sleep_bootstrap']= 1
-        @mynode.default['semaphore']['aws_region'] = 'us-east-1'
+        @mynode.default['semaphore']['s3_bucket_lock']['aws_region'] = 'us-east-1'
         @mynode.default['semaphore']['max_retry_count'] = 2
-        @mynode.default['semaphore']['s3_bucket_name_done'] = 'bucket-name-test-done'
+        @mynode.default['semaphore']['s3_bucket_done']['name'] = 'bucket-name-test-done'
+        @mynode.default['semaphore']['s3_bucket_done']['aws_region'] = 'us-west-1'
         @mynode.default['semaphore']['bootstrapped_key'] = 'my-key'
       end
 
@@ -212,9 +212,9 @@ describe InstanceSemaphore do
        @mynode = Chef::Node.new
        @mynode.default['semaphore']['sleep_wait_bootrap_seconds'] = 1
        @mynode.default['semaphore']['sleep_bootstrap']= 1
-       @mynode.default['semaphore']['aws_region'] = 'us-east-1'
+       @mynode.default['semaphore']['s3_bucket_lock']['aws_region'] = 'us-east-1'
        @mynode.default['semaphore']['max_retry_count'] = 3
-       @mynode.default['semaphore']['s3_bucket_name_done'] = 'bucket-name-test-done'
+       @mynode.default['semaphore']['s3_bucket_done']['name'] = 'bucket-name-test-done'
        @mynode.default['semaphore']['bootstrapped_key'] = 'my-key'
        @mynode.default['semaphore']['create_bucket']['timeout']=1
        @mynode.default['semaphore']['s3_bucket_done']['force_creation']=false
@@ -258,9 +258,9 @@ describe InstanceSemaphore do
        @mynode = Chef::Node.new
        @mynode.default['semaphore']['sleep_wait_bootrap_seconds'] = 1
        @mynode.default['semaphore']['sleep_bootstrap']= 1
-       @mynode.default['semaphore']['aws_region'] = 'us-east-1'
+       @mynode.default['semaphore']['s3_bucket_lock']['aws_region'] = 'us-east-1'
        @mynode.default['semaphore']['max_retry_count'] = 3
-       @mynode.default['semaphore']['s3_bucket_name_done'] = 'bucket-name-test-done'
+       @mynode.default['semaphore']['s3_bucket_done']['name'] = 'bucket-name-test-done'
        @mynode.default['semaphore']['bootstrapped_key'] = 'my-key'
        @mynode.default['semaphore']['create_bucket']['timeout']=1
        @mynode.default['semaphore']['s3_bucket_done']['force_creation']=false
@@ -312,9 +312,9 @@ describe InstanceSemaphore do
        @mynode = Chef::Node.new
        @mynode.default['semaphore']['sleep_wait_bootrap_seconds'] = 1
        @mynode.default['semaphore']['sleep_bootstrap']= 1
-       @mynode.default['semaphore']['aws_region'] = 'us-east-1'
+       @mynode.default['semaphore']['s3_bucket_lock']['aws_region'] = 'us-east-1'
        @mynode.default['semaphore']['max_retry_count'] = 3
-       @mynode.default['semaphore']['s3_bucket_name_done'] = 'bucket-name-test-done'
+       @mynode.default['semaphore']['s3_bucket_done']['name'] = 'bucket-name-test-done'
        @mynode.default['semaphore']['bootstrapped_key'] = 'my-key'
        @mynode.default['semaphore']['create_bucket']['timeout']=1
      end
@@ -360,10 +360,11 @@ describe InstanceSemaphore do
        @mynode = Chef::Node.new
        @mynode.default['semaphore']['sleep_wait_bootrap_seconds'] = 1
        @mynode.default['semaphore']['sleep_bootstrap']= 1
-       @mynode.default['semaphore']['aws_region'] = 'us-east-1'
+       @mynode.default['semaphore']['s3_bucket_lock']['aws_region'] = 'us-east-1'
        @mynode.default['hostname']='localhost'
        @mynode.default['semaphore']['max_retry_count'] = 3
-       @mynode.default['semaphore']['s3_bucket_name_done'] = 'bucket-name-test-done'
+       @mynode.default['semaphore']['s3_bucket_done']['name'] = 'bucket-name-test-done'
+       @mynode.default['semaphore']['s3_bucket_done']['aws_region'] = 'us-west-1'
        @mynode.default['semaphore']['bootstrapped_key'] = 'my-key'
        @mynode.default['semaphore']['create_bucket']['timeout']=1
        @mynode.default['semaphore']['write_object']['timeout']=1
@@ -373,8 +374,8 @@ describe InstanceSemaphore do
      context 'when it\'s bootstrapped' do
       it 'receives stop and write_object' do
         semaphore = dummy_instancesemaphore.new
-        expect(semaphore).to receive(:write_object).with(@mynode['semaphore']['aws_region'],
-        @mynode['semaphore']['s3_bucket_name_done'],
+        expect(semaphore).to receive(:write_object).with(@mynode['semaphore']['s3_bucket_done']['aws_region'],
+        @mynode['semaphore']['s3_bucket_done']['name'],
         @mynode['ec2']['instance_id'],
         "Bootrapped instance_id: #{@mynode['ec2']['instance_id']}",
         @mynode['semaphore']['write_object']['timeout'],
@@ -388,8 +389,8 @@ describe InstanceSemaphore do
     context 'when it\'s not bootstrapped' do
      it 'receives stop and write_object' do
        semaphore = dummy_instancesemaphore.new
-       expect(semaphore).to receive(:write_object).with(@mynode['semaphore']['aws_region'],
-       @mynode['semaphore']['s3_bucket_name_done'],
+       expect(semaphore).to receive(:write_object).with(@mynode['semaphore']['s3_bucket_done']['aws_region'],
+       @mynode['semaphore']['s3_bucket_done']['name'],
        @mynode['semaphore']['bootstrapped_key'],
        "Bootrapped instance_id: #{@mynode['ec2']['instance_id']}",
        @mynode['semaphore']['write_object']['timeout'],

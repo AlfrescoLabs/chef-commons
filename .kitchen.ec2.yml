@@ -66,8 +66,8 @@ suites:
          "service_url": "http://httpstat.us/404",
          "parallel": true,
          "s3_bucket_name": "ec2-kitchen-bucketname-parallel-todelete",
-         "s3_bucket_name_done": "ec2-kitchen-bucketname-done-parallel-todelete",
          "s3_bucket_done": {
+           "name" : "ec2-kitchen-bucketname-done-parallel-todelete",
            "force_creation": true
          },
          "wait_while_service_up": {
@@ -96,8 +96,8 @@ suites:
          "service_url": "http://httpstat.us/404",
          "parallel": true,
          "s3_bucket_name": "ec2-kitchen-bucketname-parallel-todelete",
-         "s3_bucket_name_done": "ec2-kitchen-bucketname-done-parallel-todelete",
          "s3_bucket_done": {
+           "name" : "ec2-kitchen-bucketname-done-parallel-todelete",
            "force_creation": true
          },
          "wait_while_service_up": {
@@ -126,8 +126,8 @@ suites:
          "service_url": "http://httpstat.us/404",
          "parallel": true,
          "s3_bucket_name": "ec2-kitchen-bucketname-parallel-todelete",
-         "s3_bucket_name_done": "ec2-kitchen-bucketname-done-parallel-todelete",
          "s3_bucket_done": {
+           "name" : "ec2-kitchen-bucketname-done-parallel-todelete",
            "force_creation": true
          },
          "wait_while_service_up": {
@@ -156,8 +156,8 @@ suites:
          "service_url": "http://httpstat.us/404",
          "parallel": true,
          "s3_bucket_name": "ec2-kitchen-bucketname-parallel-todelete",
-         "s3_bucket_name_done": "ec2-kitchen-bucketname-done-parallel-todelete",
          "s3_bucket_done": {
+           "name" : "ec2-kitchen-bucketname-done-parallel-todelete",
            "force_creation": true
          },
          "wait_while_service_up": {
