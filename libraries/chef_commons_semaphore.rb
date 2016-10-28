@@ -1,12 +1,27 @@
-# Module handling the logic to start multiple alfresco node in AWS instances one by one to avoid race conditions with DB
+# Module handling the logic to start multiple Alfresco node in AWS instances one by one to avoid race conditions with DB
 # A bucket creation is used as flag to indicate a node is starting and configuring
-# Logic:
-# AWS Node1 initiates in AWS and create the bucket (start method)
-# AWS Node1 starts alfresco redeploy (alfresco is starting)
-# AWS Node1 wait till alfresco service is up and running (wait_while_service_up method)
+#
+# It handles both a PARALLEL and SERIAL Logic
+#
+# PARALLEL Logic (one node starts, when it's finished all the others will start almost simultaneously):
+#
+# AWS Node1 initiates in AWS and creates the bucket (start_parallel method)
+# AWS Node1 starts Alfresco redeploy (Alfresco is starting)
+# AWS Node1 waits till Alfresco service is up and running (wait_while_service_up_parallel method)
+# AWS Node1 creates a key into a defined bucket to mark it as bootrapped
 # AWS Node1 deletes the bucket (stop method)
 # If any other node starts up while Node1 is starting, Node2 will wait till bucket is deleted and then will recreate the bucket
-# NOTE: This module needs aws-sdk preinstalled to work (recipe: commons::install_aws_sdk)
+#
+# SERIAL Logic (each node wait for the previous to start):
+#
+# AWS Node1 initiates in AWS and create the bucket (start method)
+# AWS Node1 starts Alfresco redeploy (Alfresco is starting)
+# AWS Node1 wait till Alfresco service is up and running (wait_while_service_up method)
+# AWS Node1 deletes the bucket (stop method)
+# If any other node starts while Node1 is starting, Node2 will wait till bucket is deleted and then will recreate the bucket
+# All the nodes will start in serial one after the other
+#
+# @NOTE: This module needs aws-sdk preinstalled to work (recipe  commons::install_aws_sdk)
 
 module InstanceSemaphore
 
@@ -32,31 +47,28 @@ module InstanceSemaphore
     def start(node)
       load_aws_sdk
       retry_count = 0
-      hostname = node['hostname']
-      s3_bucket_name = node['semaphore']['s3_bucket_name']
+      s3_bucket_name = node['semaphore']['s3_bucket_lock']['name']
       sleep_seconds = node['semaphore']['sleep_create_bucket_seconds']
 
-      s3 = Aws::S3::Client.new(region: node['semaphore']['aws_region'])
+      s3 = Aws::S3::Client.new(region: node['semaphore']['s3_bucket_lock']['aws_region'])
 
       while true
+        retry_count += 1
         begin
-          puts "[#{hostname}] Creating bucket #{s3_bucket_name}"
+          puts "[Semaphore][start] Creating bucket #{s3_bucket_name}"
           bucket = s3.create_bucket(bucket: s3_bucket_name)
-          puts "[#{hostname}] Bucket #{s3_bucket_name} created!"
+          puts "[Semaphore][start] Bucket #{s3_bucket_name} created!"
           return true
-          break
         rescue Aws::S3::Errors::InvalidBucketName => e
-	        puts "Invalid bucket name '#{s3_bucket_name}' -> #{e.message}"
+	        puts "[Semaphore][start] Invalid bucket name '#{s3_bucket_name}' -> #{e.message}"
           return false
-          break
         rescue Aws::S3::Errors::ServiceError => e
-          puts "Error while creating the bucket TYPE: #{e.class} MESSAGE: #{e.message}"
+          puts "[Semaphore][start] Error while creating the bucket TYPE: #{e.class} MESSAGE: #{e.message}"
           if retry_count > node['semaphore']['max_retry_count']
-             puts 'Max number retry reached'
+             puts '[Semaphore][start] Max number retry reached'
              return false
           else
-            puts "##{retry_count} [#{hostname}] sleeping #{sleep_seconds} seconds until bucket has been deleted"
-            retry_count += 1
+            puts "[Semaphore][start] ##{retry_count} sleeping #{sleep_seconds} seconds until bucket has been deleted"
             sleep(sleep_seconds)
             next
           end
@@ -74,34 +86,32 @@ module InstanceSemaphore
         url = node['semaphore']['service_url']
         accepted_responses = node['semaphore']['service_accepted_responses']
         uri = URI(url)
-        puts "Checking if [#{url}] is up"
+        puts "[Semaphore][wait_while_service_up] Checking if [#{url}] is up"
         while retry_count < node['semaphore']['max_retry_count']
           begin
-            puts "Attempt ##{retry_count}"
+            puts "[Semaphore][wait_while_service_up] Attempt ##{retry_count}"
             res = Net::HTTP.get_response(uri).code
             if accepted_responses.include? res
               puts "#{url} is up!"
               return true
-              break
             else
-              puts "[#{res}] #{url} not available yet - sleep #{sleep_seconds} seconds"
+              puts "[Semaphore][wait_while_service_up] [#{res}] #{url} not available yet - sleep #{sleep_seconds} seconds"
               sleep(sleep_seconds)
               retry_count += 1
               next
             end
           rescue Timeout::Error, Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
-            puts "Error #{e.class}: #{e.message} while getting http response"
-            puts "##{retry_count} Sleeping #{sleep_seconds} seconds and retrying"
+            puts "[Semaphore][wait_while_service_up] Error #{e.class}: #{e.message} while getting http response"
+            puts "[Semaphore][wait_while_service_up] ##{retry_count} Sleeping #{sleep_seconds} seconds and retrying"
             sleep(sleep_seconds)
             retry_count += 1
             next
           rescue StandardError => e
-            puts "Error while getting http response - TYPE: #{e.class} MESSAGE: #{e.message} -> exit"
+            puts "[Semaphore][wait_while_service_up] Error while getting http response - TYPE: #{e.class} MESSAGE: #{e.message} -> exit"
             return false
-            break
           end
         end
-        puts 'Max number retry reached'
+        puts '[Semaphore][wait_while_service_up] Max number retry reached'
         return false
     end
 
@@ -111,32 +121,215 @@ module InstanceSemaphore
       load_aws_sdk
       sleep_seconds = node['semaphore']['sleep_delete_bucket_seconds']
       retry_count = 0
-      hostname = node['hostname']
-      s3 = Aws::S3::Client.new(region: node['semaphore']['aws_region'])
-      puts "[#{hostname}] Deleting bucket #{node['semaphore']['s3_bucket_name']}"
+      s3 = Aws::S3::Client.new(region: node['semaphore']['s3_bucket_lock']['aws_region'])
+      puts "[Semaphore][stop] Deleting bucket #{node['semaphore']['s3_bucket_lock']['name']}"
       while true
         begin
-          s3.delete_bucket(bucket: node['semaphore']['s3_bucket_name'])
-          puts "[#{hostname}] Bucket #{node['semaphore']['s3_bucket_name']} deleted!"
+          s3.delete_bucket(bucket: node['semaphore']['s3_bucket_lock']['name'])
+          puts "[Semaphore][stop] Bucket #{node['semaphore']['s3_bucket_lock']['name']} deleted!"
           return true
-          break
         rescue Aws::S3::Errors::NoSuchBucket
-          puts "No such bucket to delete -> exit"
+          puts "[Semaphore][stop] No such bucket to delete -> exit"
           return true
-          break
         rescue Aws::S3::Errors::ServiceError => e
           if retry_count > node['semaphore']['max_retry_count']
-             puts "Error while deleting the bucket TYPE: #{e.class} MESSAGE: #{e.message}"
-             puts 'Max number retry reached'
+             puts "[Semaphore][stop] Error while deleting the bucket TYPE: #{e.class} MESSAGE: #{e.message}"
+             puts '[Semaphore][stop] Max number retry reached'
              return false
           else
             retry_count += 1
             puts e.message
-            puts "[#{hostname}] Cannot delete the bucket sleeping #{sleep_seconds} seconds to try to delete it again"
+            puts "[Semaphore][stop] Cannot delete the bucket sleeping #{sleep_seconds} seconds to try to delete it again"
             sleep(sleep_seconds)
             next
           end
         end
       end
     end
+
+    # method to create a bucket into the specified region, with specified backet name
+    # it will attempt a `retries` number of time and wait `timeout` seconds
+    # if the bucket already exists it will return false and will not retry
+    def create_bucket(region,s3_bucket_name,retries,timeout)
+      load_aws_sdk
+      retry_count = 0
+      s3_client = Aws::S3::Client.new(region: region)
+      while retry_count < retries
+        retry_count += 1
+        begin
+          puts "[Semaphore][create_bucket] Creating bucket #{s3_bucket_name}"
+          bucket = s3_client.create_bucket(bucket: s3_bucket_name)
+          puts "[Semaphore][create_bucket] Bucket #{s3_bucket_name} created!"
+          return true
+        rescue Aws::S3::Errors::BucketAlreadyExists, Aws::S3::Errors::BucketAlreadyOwnedByYou => e
+          puts "[Semaphore][create_bucket] Bucket #{s3_bucket_name} already exists"
+          puts "[Semaphore][create_bucket] #{e}"
+          return false
+        rescue  Aws::S3::Errors::InvalidBucketName => e
+          puts e
+          raise e.message
+        rescue Aws::S3::Errors::ServiceError => e
+          puts "[Semaphore][create_bucket] Error #{e.class}: #{e.message} while creating bucket #{s3_bucket_name}"
+          puts "[Semaphore][create_bucket] [##{retry_count}] Sleeping #{timeout} seconds and retrying"
+          sleep(timeout)
+          next
+        end
+      end
+      puts '[Semaphore][create_bucket] Max number retry reached'
+      return false
+    end
+
+    # checks whether an instance has already bootstrapped checking the existance of a object into a bucket
+    # in case of AWS errors it will retry a max_retry_count times
+    def bootstrapped?(node)
+      load_aws_sdk
+      sleep_seconds = node['semaphore']['sleep_bootstrap']
+      s3_client = Aws::S3::Client.new(region: node['semaphore']['s3_bucket_done']['aws_region'])
+      retry_count = 0
+      while retry_count < node['semaphore']['max_retry_count']
+        begin
+          s3_client.get_object(bucket: node['semaphore']['s3_bucket_done']['name'], key: node['semaphore']['bootstrapped_key'])
+          puts "[Semaphore][bootstrapped?] An instance alredy bootstrapped!"
+          return true
+        rescue Aws::S3::Errors::NoSuchKey => e
+          puts "[Semaphore][bootstrapped?] \
+          #{node['semaphore']['bootstrapped_key']} does not exist in #{node['semaphore']['s3_bucket_done']['name']} -> No instance bootstrapped"
+          return false
+        rescue Aws::S3::Errors::ServiceError => e
+          puts "[Semaphore][bootstrapped?] Error #{e.class}: \
+          #{e.message} while getting object #{node['semaphore']['bootstrapped_key']} from bucket #{node['semaphore']['s3_bucket_done']['name']}"
+          puts "[Semaphore][bootstrapped?] ##{retry_count} Sleeping #{sleep_seconds} seconds and retrying"
+          sleep(sleep_seconds)
+          retry_count += 1
+          next
+        end
+      end
+      puts '[Semaphore][bootstrapped?] Max number retry reached'
+      return false
+    end
+
+    # method that waits while another instance has bootrapped using the `bootstrapped?`
+    def wait_while_bootrapped(node)
+      load_aws_sdk
+      sleep_seconds = node['semaphore']['sleep_wait_bootrap_seconds']
+      retry_count = 0
+
+      while retry_count < node['semaphore']['max_retry_count']
+        puts "[Semaphore][wait_while_bootrapped] Attempt[#{retry_count}] to check node bootstrapped"
+        if bootstrapped?(node)
+          puts "[Semaphore][wait_while_bootrapped] Instance Bootstrapped!"
+          return true
+        else
+          sleep(sleep_seconds)
+          retry_count += 1
+          next
+        end
+      end
+      puts "[Semaphore][wait_while_bootrapped] Max number of attempts reached to wait bootrapping"
+      return false
+    end
+
+    # Method to start a parallel semaphore
+    # if a node already bootstrapped it exists
+    # if no node bootrapped it checks whether it can create the lock (bucket)
+    # if it can create the loc it will continute
+    # otherwise it will wait till an instance has bootrapped and then exit
+    def start_parallel(node)
+      load_aws_sdk
+      puts '[Semaphore][start_parallel] Start Parallel'
+      region = node['semaphore']['s3_bucket_lock']['aws_region']
+
+      if node['semaphore']['s3_bucket_done']['force_creation']
+        puts "Forcing creation of bucket #{node['semaphore']['s3_bucket_done']['name']}"
+        create_bucket(region,node['semaphore']['s3_bucket_done']['name'],
+        node['semaphore']['max_retry_count'],node['semaphore']['create_bucket']['timeout'])
+      end
+
+      if bootstrapped?(node)
+        return true
+      else
+        s3_bucket_name = node['semaphore']['s3_bucket_lock']['name']
+        is_bucket_created = create_bucket(region,s3_bucket_name,node['semaphore']['max_retry_count'],
+        node['semaphore']['create_bucket']['timeout'])
+        if is_bucket_created
+          puts '[Semaphore][start_parallel] bucket created -> exit'
+          return true
+        else
+          puts '[Semaphore][start_parallel] bucket not created -> waiting bootstrap'
+          wait_while_bootrapped(node)
+        end
+      end
+    end
+
+    # wait till service is up.
+    # if it has not bootrapped yet or it's forced it will wait till service is up
+    # otherwise it will exit
+    def wait_while_service_up_parallel(node)
+      load_aws_sdk
+      puts '[Semaphore][wait_while_service_up_parallel] Wait While Service Up Parallel'
+      force_wait = node['semaphore']['wait_while_service_up']['force_wait']
+      is_bootstrapped = false
+      puts "[Semaphore][wait_while_service_up_parallel] force wait: #{force_wait}"
+      if force_wait ||  is_bootstrapped = !bootstrapped?(node)
+        puts "[Semaphore][wait_while_service_up_parallel] is_bootstrapped: #{is_bootstrapped}" if !force_wait
+        return wait_while_service_up(node)
+      else
+        puts "[Semaphore][wait_while_service_up_parallel] exit"
+        return true
+      end
+    end
+
+    # If no instance has bootrapped yet it will create an object into the bucket with name `
+    # defined in node['semaphore']['bootstrapped_key']` otherwise il will create an object with
+    # the ec2 instance_id name
+    def stop_parallel(node)
+      load_aws_sdk
+      puts '[Semaphore][stop_parallel] Stop Parallel'
+      if !bootstrapped?(node)
+        puts '[Semaphore][stop_parallel] No instance bootstrapped yet!'
+        write_object(
+         node['semaphore']['s3_bucket_done']['aws_region'],
+         node['semaphore']['s3_bucket_done']['name'],
+         node['semaphore']['bootstrapped_key'],
+         "Bootrapped instance_id: #{node['ec2']['instance_id']}",
+         node['semaphore']['write_object']['timeout'],
+         node['semaphore']['max_retry_count'])
+      else
+        puts '[Semaphore][stop_parallel] An instance already bootstrapped!'
+        write_object(
+          node['semaphore']['s3_bucket_done']['aws_region'],
+          node['semaphore']['s3_bucket_done']['name'],
+          node['ec2']['instance_id'],
+          "Bootrapped instance_id: #{node['ec2']['instance_id']}",
+          node['semaphore']['write_object']['timeout'],
+          node['semaphore']['max_retry_count'])
+      end
+      stop(node)
+    end
+
+    # It writes an object in the specified region, inside the bucket with specified body
+    # it will attempt a retries number of times and sleep for timeout seconds in case of errors
+    def write_object(region,s3_bucket_name,object_name,body,timeout,retries)
+      load_aws_sdk
+      puts '[Semaphore][write_object] Writing Object'
+      retry_count = 0
+      s3_client = Aws::S3::Client.new(region: region)
+      while retry_count < retries
+        begin
+          puts "[Semaphore][write_object] Writing Object #{object_name} in bucket #{s3_bucket_name}"
+          s3_client.put_object(bucket: s3_bucket_name, key: object_name, body: body)
+          puts "[Semaphore][write_object] Object in bucket!"
+          return true
+        rescue Aws::S3::Errors::ServiceError => e
+          puts "[Semaphore][write_object] Error #{e.class}: #{e.message} while creating object #{object_name} in #{s3_bucket_name}"
+          puts "[Semaphore][write_object] [##{retry_count}] Sleeping #{timeout} seconds and retrying"
+          sleep(timeout)
+          retry_count += 1
+          next
+        end
+      end
+      puts "[Semaphore][write_object] Max number of attempts reached to write the object"
+      return false
+    end
+
 end
