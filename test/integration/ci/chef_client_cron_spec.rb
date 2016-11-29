@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe file('/etc/chef/test1.json') do
   it { should be_file }
 end

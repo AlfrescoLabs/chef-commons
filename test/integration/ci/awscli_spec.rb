@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe file('/usr/local/bin/berkshelf-checkout.sh') do
   it { should be_file }
 end

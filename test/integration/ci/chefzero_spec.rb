@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe command('aws') do
   its(:exit_status) { should eq 2 }
 end
