@@ -1,13 +1,13 @@
-default['errorpages']['error_folder'] = "/var/www/html/errors"
-default['errorpages']['error_file_cookbook'] = "commons"
-default['errorpages']['error_file_source'] = "errors"
-default['errorpages']['public_hostname'] = "localhost"
+default['errorpages']['error_folder'] = '/var/www/html/errors'
+default['errorpages']['error_file_cookbook'] = 'commons'
+default['errorpages']['error_file_source'] = 'errors'
+default['errorpages']['public_hostname'] = 'localhost'
 
-default['errorpages']['400_error_page_message'] = "Alfresco received a bad request!"
-default['errorpages']['403_error_page_message'] = "Alfresco forbids you from doing that!"
-default['errorpages']['404_error_page_message'] = "Alfresco couldnt find your file."
-default['errorpages']['408_error_page_message'] = "Alfresco timed out."
-default['errorpages']['500_error_page_message'] = "Alfresco is having some issues, sorry."
-default['errorpages']['502_error_page_message'] = "Alfresco is having some issues!"
-default['errorpages']['503_error_page_message'] = "Alfresco is under heavy load right now!"
-default['errorpages']['504_error_page_message'] = "Alfresco is having some issues!"
+default['errorpages']['400_error_page_message'] = 'Alfresco received a bad request!'
+default['errorpages']['403_error_page_message'] = 'Alfresco forbids you from doing that!'
+default['errorpages']['404_error_page_message'] = 'Alfresco couldnt find your file.'
+default['errorpages']['408_error_page_message'] = 'Alfresco timed out.'
+default['errorpages']['500_error_page_message'] = 'Alfresco is having some issues, sorry.'
+default['errorpages']['502_error_page_message'] = 'Alfresco is having some issues!'
+default['errorpages']['503_error_page_message'] = 'Alfresco is under heavy load right now!'
+default['errorpages']['504_error_page_message'] = 'Alfresco is having some issues!'
