@@ -35,6 +35,7 @@ suites:
       "name": "chef-commons-local",
       "hostname": "chef-commons-local",
       "commons" : {
+        "install_awscli" : true,
         "logstash" : {
           "ec2" : {
             "run_discovery" : true

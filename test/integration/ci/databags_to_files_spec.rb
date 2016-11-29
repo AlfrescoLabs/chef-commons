@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe file('/etc/ssl/certs/mycertname.pem') do
   it { should be_file }
 end
