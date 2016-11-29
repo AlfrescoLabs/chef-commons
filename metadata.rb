@@ -5,9 +5,9 @@ license          'Apache 2.0'
 description      'Installs Alfresco Community and Enterprise Edition.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-version "0.5.4"
-issues_url ""
-source_url ""
+version '0.5.4'
+issues_url ''
+source_url ''
 
 # Community cookbooks
 depends 'python', '>= 1.4.6'
