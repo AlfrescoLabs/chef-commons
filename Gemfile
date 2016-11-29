@@ -2,21 +2,30 @@ source 'https://rubygems.org'
 
 # Used by Travis
 
-gem 'foodcritic'
-gem 'minitest'
+gem 'inspec', '~>1.2.1'
+gem 'foodcritic', '~> 6.3.0'
+gem 'cookstyle', '~> 0.0.1'
+gem 'berkshelf', '~> 5.1.0'
+gem 'chefspec', '~> 4.5.0'
+gem 'simplecov', '~> 0.12.0'
+gem 'simplecov-rcov', '~> 0.2.3'
 gem 'rake'
-gem 'rubocop'
-gem 'berkshelf'
-gem 'chefspec'
+gem 'aws-sdk', '~> 2'
 
 group :docker do
   gem 'test-kitchen', '~> 1.4'
-  gem 'kitchen-docker', '~> 2.1.0'
+  gem 'kitchen-docker', '~> 2.6.0'
+  gem 'kitchen-inspec', '~> 0.16.1'
 end
 
 group :vagrant do
   gem 'vagrant-wrapper', '~> 2.0'
-  gem 'kitchen-vagrant', '~> 0.20'
+  gem 'kitchen-vagrant', '~> 0.18'
 end
-#gem "ec2", '~> 0.10'
-gem 'aws-sdk', '~> 2'
+
+group :development do
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'guard-rubocop'
+  gem 'guard-foodcritic', '~> 2.1.0'
+end
