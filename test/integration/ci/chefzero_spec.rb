@@ -7,6 +7,6 @@ describe file('/root/.aws/credentials') do
 end
 
 describe file('/root/.aws/credentials') do
-  its(:content) { should match /aws_access_key_id/ }
-  its(:content) { should match /aws_secret_access_key/ }
+  its(:content) { should match(/aws_access_key_id/) }
+  its(:content) { should match(/aws_secret_access_key/) }
 end
