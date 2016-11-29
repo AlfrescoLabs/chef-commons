@@ -1,9 +1,16 @@
-rvm: 2.2.4
+rvm: 2.2
 
-sudo: false
+sudo: required
+services: docker
 
-install: bundle install --jobs=3 --without='vagrant'
+before_install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chefdk -v 0.19.6
+install:
+  - chef exec bundle
+  - chef exec berks
+
+before_script: sudo iptables -L DOCKER || sudo iptables -N DOCKER
 
 script:
-  - bundle exec rake foodcritic
-  - bundle exec rspec
+  - chef exec rake foodcritic .
+  # Run test-kitchen with docker driver, for example:
+  - chef exec rake 'integration:docker[ci,test]'
