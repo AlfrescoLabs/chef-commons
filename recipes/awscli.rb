@@ -20,32 +20,31 @@ if node['commons']['install_awscli']
 
   if node['commons']['awscli']['force_commandline_install']
     include_recipe 'yum-epel::default'
-    package "python-pip" do
+    package 'python-pip' do
       action :install
       retries 10
       retry_delay 60
     end
-    execute "install-awscli" do
-      command "pip install awscli --ignore-installed six"
-      not_if "pip list | grep awscli"
+    execute 'install-awscli' do
+      command 'pip install awscli --ignore-installed six'
+      not_if 'pip list | grep awscli'
     end
   else
     include_recipe 'python::default'
-    python_pip "awscli"
+    python_pip 'awscli'
   end
 
-  if credentials_databag and credentials_databag_item
+  if credentials_databag && credentials_databag_item
     begin
-      aws_credentials = data_bag_item(credentials_databag,credentials_databag_item)
+      aws_credentials = data_bag_item(credentials_databag, credentials_databag_item)
       aws_access_key_id = aws_credentials['aws_access_key_id']
       aws_secret_access_key = aws_credentials['aws_secret_access_key']
     rescue
-      Chef::Log.warn("commons::awscli cannot find databag '"+credentials_databag+"' with item '"+
-      credentials_databag_item+"'; skipping "+aws_config_file+ " file creation")
+      Chef::Log.warn("commons::awscli cannot find databag '#{credentials_databag}' with item '#{credentials_databag_item}'; skipping #{aws_config_file} file creation")
     end
   end
 
-  if aws_access_key_id and aws_secret_access_key
+  if aws_access_key_id && aws_secret_access_key
     aws_config = "[default]
 region=#{aws_region}
 aws_access_key_id=#{aws_access_key_id}
@@ -53,7 +52,7 @@ aws_secret_access_key=#{aws_secret_access_key}"
     directory credentials_parent_path do
       mode '0600'
       action :create
-      not_if { File.exist?(credentials_parent_path)}
+      not_if { File.exist?(credentials_parent_path) }
     end
     file aws_config_file do
       content aws_config
