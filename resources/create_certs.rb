@@ -1,10 +1,10 @@
 resource_name :create_certs
 
-property :ssl_filename, String
-property :ssl_fqdn, String
-property :ssl_folder, String
-property :ssl_databag, String
-property :ssl_databag_item, String
+property :ssl_filename, String, required: true
+property :ssl_fqdn, String, default: 'localhost'
+property :ssl_folder, String, required: true
+property :ssl_databag, String, default: ''
+property :ssl_databag_item, String, default: ''
 property :skip_certificate_creation, kind_of: [TrueClass, FalseClass], default: true
 
 default_action :nothing
