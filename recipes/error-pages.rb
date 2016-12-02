@@ -2,6 +2,7 @@ error_file_cookbook = node['errorpages']['error_file_cookbook']
 error_file_source = node['errorpages']['error_file_source']
 error_folder = node['errorpages']['error_folder']
 hostname = node['errorpages']['public_hostname']
+
 directory error_folder do
   action :create
   recursive true
@@ -11,6 +12,6 @@ end
   template "#{error_folder}/#{error_code}.http" do
     cookbook error_file_cookbook
     source "#{error_file_source}/#{error_code}.http.erb"
-    variables({hostname: hostname})
+    variables(hostname: hostname)
   end
 end

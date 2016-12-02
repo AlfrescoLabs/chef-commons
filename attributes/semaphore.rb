@@ -9,13 +9,13 @@ default['semaphore']['sleep_bootstrap'] = 2
 default['semaphore']['create_bucket']['timeout'] = 2
 default['semaphore']['write_object']['timeout'] = 2
 
-default['semaphore']['s3_bucket_name'] = "starting-instance"
+default['semaphore']['s3_bucket_name'] = 'starting-instance'
 
 default['semaphore']['s3_bucket_lock']['name'] = node['semaphore']['s3_bucket_name']
 default['semaphore']['s3_bucket_lock']['aws_region'] = node['semaphore']['aws_region']
 
 default['semaphore']['s3_bucket_done']['aws_region'] = 'us-west-1'
-default['semaphore']['s3_bucket_done']['name'] = "starting-instance-done"
+default['semaphore']['s3_bucket_done']['name'] = 'starting-instance-done'
 default['semaphore']['s3_bucket_done']['force_creation'] = false
 
 default['semaphore']['service_url'] = 'http://localhost:8070/alfresco'

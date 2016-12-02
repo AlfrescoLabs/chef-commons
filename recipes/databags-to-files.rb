@@ -21,12 +21,12 @@ default_filename_prefix = node['commons']['databags_to_files']['default_filename
 databags = node['commons']['databags_to_files']['databags']
 
 if databags
-  databags.each do |databag_name,databag_items|
-    databag_items.each do |databag_item_name,databag_item|
+  databags.each do |databag_name, databag_items|
+    databag_items.each do |databag_item_name, databag_item|
       destination_folder = databag_item['destination_folder'] || default_destination_folder
       filename_prefix = databag_item['filename_prefix'] || default_filename_prefix
 
-      Application.fatal!("Cannot find databag destination_folder or filename_prefix on commons::databags_to_files recipe for databag #{databag_name}/#{databag_item_name}") unless destination_folder or filename_prefix
+      Application.fatal!("Cannot find databag destination_folder or filename_prefix on commons::databags_to_files recipe for databag #{databag_name}/#{databag_item_name}") unless destination_folder || filename_prefix
 
       directory destination_folder do
         action :create
@@ -34,17 +34,16 @@ if databags
       end
 
       begin
-        data_bag_item_content = data_bag_item(databag_name,databag_item_name)
+        data_bag_item_content = data_bag_item(databag_name, databag_item_name)
         Chef::Log.info("Found databag #{databag_name}/#{databag_item_name}; parsing now")
-        data_bag_item_content.each do |attribute_name,attribute_value|
-          unless attribute_name == "id"
-            attribute_output_file = "#{destination_folder}/#{filename_prefix}.#{attribute_name}"
-            file attribute_output_file do
-              action :create
-              content attribute_value
-            end
-            Chef::Log.info("Created file #{attribute_output_file}")
+        data_bag_item_content.each do |attribute_name, attribute_value|
+          next if attribute_name == 'id'
+          attribute_output_file = "#{destination_folder}/#{filename_prefix}.#{attribute_name}"
+          file attribute_output_file do
+            action :create
+            content attribute_value
           end
+          Chef::Log.info("Created file #{attribute_output_file}")
         end
       rescue
         Chef::Log.error("Cannot find databag #{databag_name}/#{databag_item_name}")
