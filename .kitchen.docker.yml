@@ -29,7 +29,6 @@ suites:
       - recipe[commons::ec2-tagging]
       - recipe[commons::ec2-discovery]
       - recipe[commons::error-pages]
-      - recipe[commons::certs]
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "name": "chef-commons-local",
