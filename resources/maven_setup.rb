@@ -10,7 +10,6 @@ property :purge_settings, kind_of: [TrueClass, FalseClass], default: lazy { node
 default_action :create
 
 action :create do
-
   # node.default['maven']['m2_home'] = maven_home
 
   include_recipe 'maven::default'
@@ -19,12 +18,12 @@ action :create do
 
   if attribute_repos
     attribute_repos.each do |repo_id, repo|
-      mvnRepo = {}
-      mvnRepo['id'] = repo_id
+      mvn_repo = {}
+      mvn_repo['id'] = repo_id
       repo.each do |param_name, param_value|
-        mvnRepo[param_name] = param_value
+        mvn_repo[param_name] = param_value
       end
-      maven_repos.push mvnRepo
+      maven_repos.push mvn_repo
     end
   end
   begin

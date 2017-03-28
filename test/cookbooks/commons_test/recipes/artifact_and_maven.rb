@@ -1,6 +1,6 @@
 maven_setup 'setup maven' do
   maven_home node['maven']['m2_home']
-  only_if {node['commons']['install_maven']}
+  only_if { node['commons']['install_maven'] }
 end
 
 artifact 'deploy artifacts' do

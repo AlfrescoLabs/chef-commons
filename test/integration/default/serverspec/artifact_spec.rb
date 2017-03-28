@@ -50,5 +50,4 @@ describe 'artifact resource' do
   it 'replaced term MANIFEST.MF to contain -> (Test replace Term)' do
     expect(file('/home/vagrant/properties_suite/junit4/META-INF/MANIFEST.MF')).to contain 'Created-By: 1.7.0_04-b20 (Test replace Term)'
   end
-
 end

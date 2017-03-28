@@ -1,0 +1,192 @@
+---
+driver:
+  name: ec2
+  aws_ssh_key_id: commons
+  security_group_ids: ["sg-26501c5f"]
+  region: us-east-1
+  availability_zone: b
+  require_chef_omnibus: true
+  subnet_id: subnet-0340805b
+  instance_type: m3.large
+  associate_public_ip: true
+  shared_credentials_profile: internal
+  vpc_id: vpc-74463d10
+
+
+transport:
+  ssh_key: ~/.ssh/commons
+  username: centos
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: centos-7.2
+    driver:
+      image_id: ami-6d1c2007
+      tags:
+           Name: kitchen-test-commons
+      block_device_mappings:
+        - device_name: /dev/sdb
+          ebs:
+            volume_type: gp2
+            volume_size: 8
+            delete_on_termination: true
+
+suites:
+  - name: ec2-start
+    run_list:
+      - recipe[commons::install_aws_sdk]
+      - recipe[commons::awscli]
+      - recipe[commons::start_instance]
+    data_bags_path: "test/integration/data_bags"
+    attributes: {
+       "semaphore": {
+         "s3_bucket_name": "ec2-start-kitchen-bucketname-todelete"
+         },
+        "commons" : {
+            "install_awscli": true,
+            "awscli" : {
+                  "credentials_databag" : "aws",
+                  "credentials_databag_item" : "test"
+                }
+            }
+      }
+  - name: ec2-parallel-node1
+    run_list:
+      - recipe[commons::install_aws_sdk]
+      - recipe[commons::awscli]
+      - recipe[commons::start_instance]
+      - recipe[commons::wait_instance]
+      - recipe[commons::stop_instance]
+    data_bags_path: "test/integration/data_bags"
+    attributes: {
+       "semaphore": {
+         "max_retry_count": 5,
+         "service_url": "http://httpstat.us/404",
+         "parallel": true,
+         "s3_bucket_name": "ec2-kitchen-bucketname-parallel-todelete",
+         "s3_bucket_done": {
+           "name" : "ec2-kitchen-bucketname-done-parallel-todelete",
+           "force_creation": true
+         },
+         "wait_while_service_up": {
+            "force_wait" : true
+          },
+       },
+        "commons" : {
+            "install_awscli": true,
+            "awscli" : {
+                  "credentials_databag" : "aws",
+                  "credentials_databag_item" : "test"
+                }
+            }
+      }
+  - name: ec2-parallel-node2
+    run_list:
+      - recipe[commons::install_aws_sdk]
+      - recipe[commons::awscli]
+      - recipe[commons::start_instance]
+      - recipe[commons::wait_instance]
+      - recipe[commons::stop_instance]
+    data_bags_path: "test/integration/data_bags"
+    attributes: {
+       "semaphore": {
+         "max_retry_count": 5,
+         "service_url": "http://httpstat.us/404",
+         "parallel": true,
+         "s3_bucket_name": "ec2-kitchen-bucketname-parallel-todelete",
+         "s3_bucket_done": {
+           "name" : "ec2-kitchen-bucketname-done-parallel-todelete",
+           "force_creation": true
+         },
+         "wait_while_service_up": {
+            "force_wait" : true
+          },
+       },
+        "commons" : {
+            "install_awscli": true,
+            "awscli" : {
+                  "credentials_databag" : "aws",
+                  "credentials_databag_item" : "test"
+                }
+            }
+      }
+  - name: ec2-parallel-node3
+    run_list:
+      - recipe[commons::install_aws_sdk]
+      - recipe[commons::awscli]
+      - recipe[commons::start_instance]
+      - recipe[commons::wait_instance]
+      - recipe[commons::stop_instance]
+    data_bags_path: "test/integration/data_bags"
+    attributes: {
+       "semaphore": {
+         "max_retry_count": 5,
+         "service_url": "http://httpstat.us/404",
+         "parallel": true,
+         "s3_bucket_name": "ec2-kitchen-bucketname-parallel-todelete",
+         "s3_bucket_done": {
+           "name" : "ec2-kitchen-bucketname-done-parallel-todelete",
+           "force_creation": true
+         },
+         "wait_while_service_up": {
+            "force_wait" : true
+          },
+       },
+        "commons" : {
+            "install_awscli": true,
+            "awscli" : {
+                  "credentials_databag" : "aws",
+                  "credentials_databag_item" : "test"
+                }
+            }
+      }
+  - name: ec2-parallel-node4
+    run_list:
+      - recipe[commons::install_aws_sdk]
+      - recipe[commons::awscli]
+      - recipe[commons::start_instance]
+      - recipe[commons::wait_instance]
+      - recipe[commons::stop_instance]
+    data_bags_path: "test/integration/data_bags"
+    attributes: {
+       "semaphore": {
+         "max_retry_count": 5,
+         "service_url": "http://httpstat.us/404",
+         "parallel": true,
+         "s3_bucket_name": "ec2-kitchen-bucketname-parallel-todelete",
+         "s3_bucket_done": {
+           "name" : "ec2-kitchen-bucketname-done-parallel-todelete",
+           "force_creation": true
+         },
+         "wait_while_service_up": {
+            "force_wait" : true
+          },
+       },
+        "commons" : {
+            "install_awscli": true,
+            "awscli" : {
+                  "credentials_databag" : "aws",
+                  "credentials_databag_item" : "test"
+                }
+            }
+      }
+  - name: ec2-stop
+    run_list:
+      - recipe[commons::install_aws_sdk]
+      - recipe[commons::awscli]
+      - recipe[commons::stop_instance]
+    data_bags_path: "test/integration/data_bags"
+    attributes: {
+       "semaphore": {
+         "s3_bucket_name": "ec2-start-kitchen-bucketname-todelete"
+         },
+        "commons" : {
+            "install_awscli": true,
+            "awscli" : {
+                "credentials_databag" : "aws",
+                "credentials_databag_item" : "test"
+              }
+            }
+      }
