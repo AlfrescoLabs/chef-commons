@@ -113,7 +113,7 @@ describe InstanceSemaphore do
       it 'does NOT call sleep and returns true' do
         Aws.config[:s3] = {
           stub_responses: {
-            create_bucket: Aws::S3::Types::CreateBucketOutput.new,
+            create_bucket: Aws::S3::Types::CreateBucketOutput.new
           }
         }
         semaphore = dummy_instancesemaphore.new
