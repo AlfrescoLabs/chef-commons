@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'maven_setup resource' do
   it 'should have installed maven' do
-    expect(command('mvn -version').stdout).to match /Apache Maven/
+    expect(command('mvn -version').stdout).to match 'Apache Maven'
   end
 
   it 'should have created a symlink to maven home' do
