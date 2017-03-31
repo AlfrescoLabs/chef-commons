@@ -15,7 +15,7 @@ platforms:
 
 verifier:
   name: inspec
-  
+
 provisioner:
   name: chef_zero
 
@@ -81,5 +81,58 @@ suites:
             }
           }
         }
+      },
+      artifacts: {
+        junit1: {
+          enabled: true,
+          groupId : "junit",
+          artifactId : "junit",
+          version : "4.11",
+          destination: "/home/vagrant/default_suite",
+          owner: "root",
+          # Force failure by setting timeout to 1 sec
+          # timeout: 1
+        },
+        junit2: {
+          groupId : "junit",
+          artifactId : "junit",
+          version : "4.11",
+          destination: "/home/vagrant/disabled_suite",
+          owner: "root"
+        },
+        junit3: {
+          enabled: true,
+          unzip: true,
+          groupId : "junit",
+          artifactId : "junit",
+          version : "4.11",
+          destination: "/home/vagrant/subfolder_suite",
+          subfolder: "META-INF/\\*",
+          owner: "root"
+        },
+        junit4: {
+          enabled : true,
+          unzip: true,
+          groupId : "junit",
+          artifactId : "junit",
+          version : "4.11",
+          destination : "/home/vagrant/properties_suite",
+          owner : "root",
+          filtering_mode : "replace",
+          properties: {
+            "META-INF/MANIFEST.MF" : {
+              "Manifest-Version" : "555"
+              },
+            "LICENSE.txt" : {
+              "superProperty" : "addition works?",
+              filtering_mode : 'append'
+              }
+          },
+          terms: {
+            "META-INF/MANIFEST.MF" : {
+              '(Oracle Corporation)' : "Test replace Term"
+              }
+            }
+        }
       }
-    }
+     }
