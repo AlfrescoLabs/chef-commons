@@ -12,7 +12,7 @@ end
 desc 'Runs foodcritic test'
 task :foodcritic do
   FoodCritic::Rake::LintTask.new
-  sh 'foodcritic -v'
+  sh 'foodcritic -V'
   sh 'foodcritic -f any .'
 end
 
