@@ -1,11 +1,11 @@
 name             'commons'
-maintainer       'Alfresco TAA Team'
-maintainer_email 'enzo.rivello@alfresco.com'
+maintainer       'Alfresco T&A Team'
+maintainer_email 'systems@alfresco.com'
 license          'Apache 2.0'
 description      'Installs Alfresco Community and Enterprise Edition.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-version '0.5.4'
+version '0.5.7'
 issues_url 'https://github.com/Alfresco/chef-commons/issues'
 source_url 'https://github.com/Alfresco/chef-commons'
 
