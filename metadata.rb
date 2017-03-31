@@ -22,6 +22,7 @@ depends 'artifact-deployer', '>=0.8.18'
 # depends 'build-essential', '>= 2.2.3'
 # depends 'java', '>= 1.31.0'
 # depends 'openssl', '>= 4.0.0'
+
 # depends 'yum-epel'
 # depends 'yum-repoforge', '>= 0.5.1'
 # depends 'yum-atrpms', '>= 0.1.0'

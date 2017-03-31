@@ -20,10 +20,8 @@ provisioner:
   name: chef_zero
 
 suites:
-  - name: default
   - name: ci
     run_list:
-      - recipe[commons_test::artifact_and_maven]
       - recipe[commons::test_prepare]
       - recipe[commons::_mock_files]
       - recipe[commons::awscli]
@@ -137,4 +135,4 @@ suites:
             }
         }
       }
-    }
+     }
