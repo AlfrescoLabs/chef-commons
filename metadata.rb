@@ -6,8 +6,12 @@ description      'Installs Alfresco Community and Enterprise Edition.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
 version '0.5.4'
-issues_url ''
-source_url ''
+issues_url 'https://github.com/Alfresco/chef-commons/issues'
+source_url 'https://github.com/Alfresco/chef-commons'
+
+chef_version '~> 12'
+
+supports 'centos', '>= 7.0'
 
 # Community cookbooks
 depends 'python', '>= 1.4.6'

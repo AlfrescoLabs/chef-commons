@@ -5,15 +5,13 @@ require 'rspec/core/rake_task'
 
 desc 'Runs cookstyle tests'
 task :cookstyle do
-  sh 'cookstyle -v'
-  sh 'cookstyle'
+  sh 'chef exec bundle exec cookstyle'
 end
 
 desc 'Runs foodcritic test'
 task :foodcritic do
   FoodCritic::Rake::LintTask.new
-  sh 'foodcritic -V'
-  sh 'foodcritic -f any .'
+  sh 'chef exec bundle exec foodcritic -f any .'
 end
 
 desc 'Runs ChefSpec tests'
