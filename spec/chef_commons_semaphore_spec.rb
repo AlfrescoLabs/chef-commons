@@ -27,8 +27,8 @@ describe InstanceSemaphore do
             create_bucket: Aws::S3::Errors::BucketAlreadyOwnedByYou.new(
               'Your previous request to create the named bucket succeeded and you already own it',
               'Your previous request to create the named bucket succeeded and you already own it'
-            )
-          }
+            ),
+          },
         }
         semaphore = dummy_instancesemaphore.new
         expect(semaphore).to receive(:sleep).with(@mynode['semaphore']['sleep_create_bucket_seconds']).exactly(@mynode['semaphore']['max_retry_count']).times
@@ -42,8 +42,8 @@ describe InstanceSemaphore do
           stub_responses: {
             create_bucket: Aws::S3::Errors::InvalidBucketName.new(
               'Invalid bucket name', 'Invalid bucket name'
-            )
-          }
+            ),
+          },
         }
         semaphore = dummy_instancesemaphore.new
         expect(semaphore).not_to receive(:sleep)
@@ -113,8 +113,8 @@ describe InstanceSemaphore do
       it 'does NOT call sleep and returns true' do
         Aws.config[:s3] = {
           stub_responses: {
-            create_bucket: Aws::S3::Types::CreateBucketOutput.new
-          }
+            create_bucket: Aws::S3::Types::CreateBucketOutput.new,
+          },
         }
         semaphore = dummy_instancesemaphore.new
         expect(semaphore).not_to receive(:sleep)
@@ -130,8 +130,8 @@ describe InstanceSemaphore do
             create_bucket: Aws::S3::Errors::BucketAlreadyOwnedByYou.new(
               'Your previous request to create the named bucket succeeded and you already own it',
               'Your previous request to create the named bucket succeeded and you already own it'
-            )
-          }
+            ),
+          },
         }
         expect(semaphore).not_to receive(:sleep)
         expect(semaphore.create_bucket(@region, 'test2', 2, 1)).to eq(false)
@@ -145,8 +145,8 @@ describe InstanceSemaphore do
           stub_responses: {
             create_bucket:  Aws::S3::Errors::InvalidBucketName.new(
               'Invalid bucket name', 'Invalid bucket name'
-            )
-          }
+            ),
+          },
         }
         expect(semaphore).not_to receive(:sleep)
         expect { semaphore.create_bucket(@region, 'test3', 2, 1) }.to raise_error(RuntimeError)
@@ -180,8 +180,8 @@ describe InstanceSemaphore do
           stub_responses: {
             get_object: Aws::S3::Errors::NoSuchKey.new(
               'No Such Key', 'No Such Key'
-            )
-          }
+            ),
+          },
         }
         semaphore = dummy_instancesemaphore.new
         expect(semaphore).not_to receive(:sleep)
@@ -195,8 +195,8 @@ describe InstanceSemaphore do
           stub_responses: {
             get_object:  Aws::S3::Errors::ServiceError.new(
               'Error', 'Error'
-            )
-          }
+            ),
+          },
         }
         semaphore = dummy_instancesemaphore.new
         expect(semaphore).to receive(:sleep).with(@mynode['semaphore']['sleep_bootstrap']).exactly(@mynode['semaphore']['max_retry_count']).times
@@ -425,8 +425,8 @@ describe InstanceSemaphore do
             put_object: Aws::S3::Errors::NoSuchBucket.new(
               'The specified bucket does not exist',
               'The specified bucket does not exist'
-            )
-          }
+            ),
+          },
         }
         semaphore = dummy_instancesemaphore.new
         expect(semaphore).to receive(:sleep).with(1).exactly(@retries).times

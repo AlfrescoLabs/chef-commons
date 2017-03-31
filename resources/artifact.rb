@@ -4,6 +4,7 @@ property :resource_title, String, name_property: true
 property :term_delimiter_start, String, default: '@@'
 property :term_delimiter_end, String, default: '@@'
 property :property_equals_sign, String, default: '='
+property :global_timeout, String, default: 600
 property :repos_databag, String, default: 'maven_repos'
 property :attribute_repos, default: lazy { node['commons']['maven']['repositories'] }
 property :chef_cache, String, default: lazy { node['commons']['cache_folder'] || Chef::Config[:file_cache_path] }
@@ -59,7 +60,7 @@ action :create do
       classifier      = artifact[:classifier] ? artifact[:classifier] : ''
       subfolder       = artifact[:subfolder] ? artifact[:subfolder] : ''
       destination     = artifact[:destination] ? artifact[:destination] : destinationPrefix
-      destination_name = artifact[:destination_name] ? artifact[:destination_name] : artifact_name
+      destination_name = artifact[:destinationName] ? artifact[:destinationName] : artifact_name
       enabled         = artifact[:enabled] ? artifact[:enabled] : false
       properties      = artifact[:properties] ? artifact[:properties] : []
       terms           = artifact[:terms] ? artifact[:terms] : []
@@ -87,6 +88,9 @@ action :create do
           group_id group_id
           version version
           classifier classifier if classifier != ''
+          # if timeout != ''
+          #   timeout     timeout
+          # end
           action :put
           dest chef_cache
           owner owner
