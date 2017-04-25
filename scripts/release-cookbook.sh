@@ -120,8 +120,8 @@ git remote set-url origin $GIT_PREFIX:$GIT_ACCOUNT_NAME/$GIT_PROJECT_NAME.git
 # Version-specific functions
 
 function getCurrentVersion () {
-  version=`cat metadata.rb| grep version|awk '{print $2}' | tr -d \"`
-  echo $version
+  local version=$(grep version metadata.rb | awk '{print $2}' | tr -d \'\")
+  echo ${version}
 }
 
 function getIncrementedVersion () {
