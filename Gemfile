@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 
 # Used by Travis
 
+gem 'chef', '~>12'
+gem 'chef-zero', '~>5'
+gem 'chef-config', '~>12'
 gem 'inspec', '~>1.2.1'
 gem 'foodcritic', '~> 10.2.0'
 gem 'cookstyle', '~> 1.2.0'
